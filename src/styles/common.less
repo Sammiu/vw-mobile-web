@@ -1,0 +1,16 @@
+.image__dpr(@img) {
+  background-image: url("@{img}");
+  background-size: contain;
+
+  @media only screen and (-webkit-min-device-pixel-ratio: 2) {
+    @_img: replace("@{img}", '\.png$', '@2x.png');
+
+    background-image: url("@{_img}");
+  }
+
+  @media only screen and (-webkit-min-device-pixel-ratio: 3) {
+    @_img: replace("@{img}", '\.png$', '@3x.png');
+
+    background-image: url("@{_img}");
+  }
+}
