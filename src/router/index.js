@@ -2,9 +2,10 @@ import Vue from 'vue'
 import store from '@/store'
 import Router from 'vue-router'
 import Page1 from '@/pages/page1/Index'
-import Page2 from '@/pages/page2/Index'
-import Page3 from '@/pages/page3/Index'
-import Page4 from '@/pages/page4/Index'
+
+const Page2 = () => import('@/pages/page2/Index')
+const Page3 = () => import('@/pages/page3/Index')
+const Page4 = () => import('@/pages/page4/Index')
 
 Vue.use(Router)
 
