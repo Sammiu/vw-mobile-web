@@ -1,6 +1,6 @@
 # vw-mobile-web
 
-> A Vue.js project
+> A simple mobile web single page application for Vue.js project
 
 ## Build Setup
 
