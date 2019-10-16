@@ -52,7 +52,7 @@
       }
 
       &:active {
-        background: #ff0000;
+        background: #f1f1f1;
       }
     }
   }
