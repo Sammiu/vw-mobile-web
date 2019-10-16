@@ -140,6 +140,12 @@
     align-items: center;
     justify-content: center;
     color: #fff;
+
+    &:active {
+      opacity: .7;
+      background: #7bd7fd;
+      transition: 100ms;
+    }
   }
 
   .home {
