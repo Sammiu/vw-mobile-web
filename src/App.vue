@@ -69,13 +69,25 @@
           this.activeName = activeName
           this.$router.push(this.mappingActivePage[activeName])
         }
+      },
+      setActiveName (path) {
+        for (let key in this.mappingActivePage) {
+          if (this.mappingActivePage.hasOwnProperty(key) && this.mappingActivePage[key] === path) {
+            this.activeName = key
+            return
+          }
+        }
       }
+    },
+    mounted () {
+      this.setActiveName(this.$route.path)
     }
   }
 </script>
 
 <style lang="less">
   @import "./styles/common.less";
+  @import "../static/font-awesome-4.7.0/less/font-awesome.less";
 
   html {
     touch-action: manipulation;
