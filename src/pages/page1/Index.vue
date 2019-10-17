@@ -29,6 +29,8 @@
 </script>
 
 <style scoped lang="less">
+  @import "../../styles/common.less";
+
   .upload-file__wrap {
     display: flex;
     flex: 1;
@@ -36,16 +38,17 @@
     justify-content: center;
 
     & .upload-select {
+      position: relative;
       display: flex;
       width: 180px;
       height: 180px;
-      border: 1.5px dashed #ccc;
       border-radius: 8px;
       color: #888;
       background: #fafafa;
       align-items: center;
       justify-content: center;
       flex-direction: column;
+      .border_dpr(1px, #ff0000, 8px);
 
       & .icon-plus {
         font-size: 40px;
