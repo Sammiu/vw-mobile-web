@@ -7,6 +7,9 @@
         <span>upload</span>
       </div>
     </div>
+    <div class="bg__wrap">
+      <div class="bg"></div>
+    </div>
   </div>
 </template>
 
@@ -30,6 +33,19 @@
 
 <style scoped lang="less">
   @import "../../styles/common.less";
+
+  .bg__wrap {
+    padding: 10px 0;
+    background: #2dc1ff;
+    text-align: center;
+  }
+
+  .bg {
+    display: inline-block;
+    height: 36px;
+    width: 36px;
+    .image__dpr('../assets/home_icon.png')
+  }
 
   .upload-file__wrap {
     display: flex;

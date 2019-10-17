@@ -14,7 +14,7 @@
     font-weight: bold;
     align-items: center;
     justify-content: center;
-    background: url("/static/img/page_600281.jpg");
+    background: url('../../assets/page_600281.jpg');
     background-size: 100% 100%;
   }
 </style>

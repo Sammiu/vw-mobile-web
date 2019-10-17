@@ -3,7 +3,9 @@
 module.exports = {
   'plugins': {
     'postcss-import': {},
-    'postcss-url': {},
+    'postcss-url': [
+      {filter: '**/assets/*.png', url: 'copy', useHash: true},
+    ],
     'postcss-aspect-ratio-mini': {},
     'postcss-cssnext': {},
     'postcss-px-to-viewport': {

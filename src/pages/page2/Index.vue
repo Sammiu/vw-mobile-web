@@ -14,7 +14,7 @@
     font-weight: bold;
     align-items: center;
     justify-content: center;
-    background: url("/static/img/page_601950.jpg");
+    background: url('../../assets/page_601950.jpg');
     background-size: 100% 100%;
   }
 </style>
