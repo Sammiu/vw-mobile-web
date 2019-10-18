@@ -96,13 +96,10 @@
   body {
     margin: 0;
     padding: 0;
-  }
-
-  #app {
+    font-size: 28px;
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-size: 28px;
   }
 
   .content__wrap {
