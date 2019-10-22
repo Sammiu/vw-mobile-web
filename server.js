@@ -2,7 +2,7 @@ const Koa = require('koa')
 const app = new Koa()
 const fs = require('fs')
 const path = require('path')
-const favicon = require('koa-favicon')
+const favicon = require('koa-favicon');
 const {createBundleRenderer} = require('vue-server-renderer')
 
 const resolve = file => path.resolve(__dirname, file)
@@ -24,21 +24,23 @@ function renderToString (context) {
     })
   })
 }
-
 app.use(require('koa-static')(resolve('./dist')))
-app.use(favicon(path.join(__dirname, 'favicon.ico')))
+app.use(favicon(path.join(__dirname, 'favicon.ico')));
 // response
 app.use(async (ctx, next) => {
   try {
-    /** {{title}} */
-    const context = {title: '服务端渲染测试', url: ctx.url}
-    /** 将服务器端渲染好的html返回给客户端 */
+    const context = {
+      title: '服务端渲染测试', // {{title}}
+      url: ctx.url
+    }
+    // 将服务器端渲染好的html返回给客户端
     ctx.body = await renderToString(context)
+    
     // 设置请求头
     ctx.set('Content-Type', 'text/html')
     ctx.set('Server', 'Koa2 server side render')
   } catch (e) {
-    /** 如果没找到，放过请求，继续运行后面的中间件*/
+    // 如果没找到，放过请求，继续运行后面的中间件
     next()
   }
 })

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="app">
     <transition :name="'vux-pop-' + (direction === 'forward' ? 'in' : 'out')">
       <keep-alive :include="['page1', 'page2', 'page3']">
         <router-view class="content__wrap"></router-view>

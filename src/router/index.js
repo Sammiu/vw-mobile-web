@@ -12,10 +12,10 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history',
   routes: [
-    {path: '/', name: 'page1', meta: {}, component: Page1},
-    {path: '/page2', name: 'page1', meta: {}, component: Page2},
-    {path: '/page3', name: 'page1', meta: {}, component: Page3},
-    {path: '/page4', name: 'page1', meta: {}, component: Page4}
+    {path: '/', name: 'Page1', meta: {keepAlive: true}, component: Page1},
+    {path: '/page2', name: 'Page2', meta: {keepAlive: true}, component: Page2},
+    {path: '/page3', name: 'Page3', meta: {keepAlive: true}, component: Page3},
+    {path: '/page4', name: 'Page4', meta: {keepAlive: false}, component: Page4}
   ]
 })
 
