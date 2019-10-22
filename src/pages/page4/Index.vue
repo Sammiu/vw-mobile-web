@@ -3,7 +3,12 @@
 </template>
 
 <script>
-  export default {}
+  export default {
+    name: 'page4',
+    mounted () {
+      console.log('这是页面4')
+    }
+  }
 </script>
 
 <style scoped>

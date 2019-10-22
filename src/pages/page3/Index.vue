@@ -4,6 +4,10 @@
 
 <script>
   export default {
+    name: 'page3',
+    mounted () {
+      console.log('这是页面3')
+    }
   }
 </script>
 

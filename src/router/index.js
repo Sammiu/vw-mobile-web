@@ -12,29 +12,29 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history',
   routes: [
-    {path: '/', name: 'Page1', meta: {index: 0}, component: Page1},
-    {path: '/page2', name: 'Page2', meta: {index: 1}, component: Page2},
-    {path: '/page3', name: 'Page3', meta: {index: 2}, component: Page3},
-    {path: '/page4', name: 'Page4', meta: {index: 3}, component: Page4}
+    {path: '/', name: 'page1', meta: {}, component: Page1},
+    {path: '/page2', name: 'page1', meta: {}, component: Page2},
+    {path: '/page3', name: 'page1', meta: {}, component: Page3},
+    {path: '/page4', name: 'page1', meta: {}, component: Page4}
   ]
 })
 
-const history = window.sessionStorage
-let historyCount = getHistoryCount(history)
+const pageStack = []
+
 router.beforeEach(function (to, from, next) {
-  const toIndex = history.getItem(to.path)
-  const fromIndex = history.getItem(from.path)
-  if (toIndex) {
-    if (!fromIndex || parseInt(toIndex, 10) > parseInt(fromIndex, 10) || (toIndex === '0' && fromIndex === '0')) {
-      store.commit('UPDATE_DIRECTION', {direction: 'forward'})
-    } else {
-      store.commit('UPDATE_DIRECTION', {direction: 'reverse'})
-    }
+  if (to.fullPath === '/') {
+    pageStack.length = 0
+    pageStack.unshift(to)
+    store.commit('UPDATE_DIRECTION', {direction: 'reverse'})
   } else {
-    ++historyCount
-    history.setItem('count', historyCount)
-    to.path !== '/' && history.setItem(to.path, historyCount)
-    store.commit('UPDATE_DIRECTION', {direction: 'forward'})
+    const itemIndex = pageStack.findIndex(o => o.fullPath === to.fullPath)
+    if (itemIndex > -1) {
+      pageStack.splice(itemIndex, pageStack.length - itemIndex - 1)
+      store.commit('UPDATE_DIRECTION', {direction: 'reverse'})
+    } else {
+      pageStack.push(to)
+      store.commit('UPDATE_DIRECTION', {direction: 'forward'})
+    }
   }
   if (/\/http/.test(to.path)) {
     let url = to.path.split('http')[1]
@@ -43,9 +43,5 @@ router.beforeEach(function (to, from, next) {
     next()
   }
 })
-
-function getHistoryCount (history) {
-  return history.getItem('count') || 0
-}
 
 export default router

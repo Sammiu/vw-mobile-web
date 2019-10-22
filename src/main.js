@@ -8,11 +8,11 @@ import 'babel-polyfill'
 
 Vue.config.productionTip = false
 
-/* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  router,
-  store,
-  components: {App},
-  template: '<App/>'
-})
+export function createApp () {
+  const app = new Vue({
+    router,
+    store,
+    render: h => h(App)
+  })
+  return {app, router}
+}

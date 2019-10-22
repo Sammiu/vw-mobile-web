@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
+  <div>
     <transition :name="'vux-pop-' + (direction === 'forward' ? 'in' : 'out')">
-      <keep-alive>
+      <keep-alive :include="['page1', 'page2', 'page3']">
         <router-view class="content__wrap"></router-view>
       </keep-alive>
     </transition>
@@ -87,7 +87,6 @@
 
 <style lang="less">
   @import "./styles/common.less";
-  @import "../static/font-awesome-4.7.0/less/font-awesome.less";
 
   html {
     touch-action: manipulation;

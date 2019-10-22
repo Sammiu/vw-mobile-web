@@ -15,6 +15,7 @@
 
 <script>
   export default {
+    name: 'page1',
     data () {
       return {
         file: null
@@ -27,6 +28,9 @@
       onFileChange (event) {
         console.log(event)
       }
+    },
+    mounted () {
+      console.log('这是页面1')
     }
   }
 </script>
