@@ -10,6 +10,7 @@
     <div class="bg__wrap">
       <div class="bg"></div>
     </div>
+    <div style="text-align: center;">测试SSR开发模式</div>
   </div>
 </template>
 

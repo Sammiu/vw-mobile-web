@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import store from '@/store'
 import Router from 'vue-router'
+import {UPDATE_DIRECTION} from '@/store/types'
 import Page1 from '@/pages/page1/Index'
+import NotFount from '@/pages/notFound/Index'
 
 const Page2 = () => import('@/pages/page2/Index')
 const Page3 = () => import('@/pages/page3/Index')
@@ -12,28 +14,34 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history',
   routes: [
-    {path: '/', name: 'Page1', meta: {keepAlive: true}, component: Page1},
-    {path: '/page2', name: 'Page2', meta: {keepAlive: true}, component: Page2},
-    {path: '/page3', name: 'Page3', meta: {keepAlive: true}, component: Page3},
-    {path: '/page4', name: 'Page4', meta: {keepAlive: false}, component: Page4}
+    {path: '/', name: 'Page1', component: Page1},
+    {path: '/page2', name: 'Page2', component: Page2},
+    {path: '/page3', name: 'Page3', component: Page3},
+    {path: '/page4', name: 'Page4', component: Page4},
+    {path: '*', name: 'NotFount', component: NotFount}
   ]
 })
 
-const pageStack = []
+let pageStack = null
 
 router.beforeEach(function (to, from, next) {
-  if (to.fullPath === '/') {
-    pageStack.length = 0
-    pageStack.unshift(to)
-    store.commit('UPDATE_DIRECTION', {direction: 'reverse'})
-  } else {
-    const itemIndex = pageStack.findIndex(o => o.fullPath === to.fullPath)
-    if (itemIndex > -1) {
-      pageStack.splice(itemIndex, pageStack.length - itemIndex - 1)
-      store.commit('UPDATE_DIRECTION', {direction: 'reverse'})
+  if (process.env.VUE_ENV === 'client') {
+    if (!Array.isArray(pageStack)) {
+      pageStack = []
+    }
+    if (to.fullPath === '/') {
+      pageStack.length = 0
+      pageStack.unshift(to)
+      store.commit(UPDATE_DIRECTION, {direction: 'reverse'})
     } else {
-      pageStack.push(to)
-      store.commit('UPDATE_DIRECTION', {direction: 'forward'})
+      const itemIndex = pageStack.findIndex(o => o.fullPath === to.fullPath)
+      if (itemIndex > -1) {
+        pageStack.splice(itemIndex, pageStack.length - itemIndex - 1)
+        store.commit(UPDATE_DIRECTION, {direction: 'reverse'})
+      } else {
+        pageStack.push(to)
+        store.commit(UPDATE_DIRECTION, {direction: 'forward'})
+      }
     }
   }
   if (/\/http/.test(to.path)) {

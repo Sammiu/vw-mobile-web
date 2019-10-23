@@ -2,7 +2,7 @@
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const nodeExternals = require('webpack-node-externals')
-const baseConfig = require('./webpack.base.conf.js')
+const baseConfig = require('../webpack.base.conf.js')
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 // 去除打包css的配置
 baseConfig.module.rules[1].options = ''
