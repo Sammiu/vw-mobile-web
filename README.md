@@ -11,8 +11,14 @@ npm install
 # serve with hot reload at localhost:8080
 npm run dev
 
+# serve side render with hot reload at localhost:3001
+npm run dev:ssr
+
 # build for production with minification
 npm run build
+
+# build serve side render for production with minification
+npm run build:ssr
 
 # build for production and view the bundle analyzer report
 npm run build --report
