@@ -17,6 +17,11 @@ npm run build
 # build for production and view the bundle analyzer report
 npm run build --report
 
+# start Server side render
+1. npm run server
+2. open the browser
+3. localhost:3001
+
 # run e2e tests
 npm run e2e
 
