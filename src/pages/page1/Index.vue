@@ -10,11 +10,16 @@
     <div class="bg__wrap">
       <div class="bg"></div>
     </div>
-    <div style="text-align: center;">测试SSR开发模式</div>
+    <div class="user-data__wrap">
+      <div>用户名：{{ userInfo.username }}</div>
+      <div>授权码：{{ userInfo.token }}</div>
+    </div>
   </div>
 </template>
 
 <script>
+  import {mapState} from 'vuex'
+
   export default {
     name: 'page1',
     data () {
@@ -22,16 +27,20 @@
         file: null
       }
     },
+    asyncData ({store}) {
+      return store.dispatch('fetchUserInfo')
+    },
+    computed: {
+      ...mapState({
+        userInfo: state => state.mutations.userInfo,
+      })
+    },
     methods: {
       selectFileHandle () {
         this.$refs.file.click()
       },
       onFileChange (event) {
-        console.log(event)
       }
-    },
-    mounted () {
-      console.log('这是页面1')
     }
   }
 </script>
@@ -79,5 +88,14 @@
         background: #f1f1f1;
       }
     }
+  }
+
+  .user-data__wrap {
+    display: flex;
+    height: 160px;
+    color: #999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 </style>

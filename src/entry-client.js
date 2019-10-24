@@ -1,5 +1,39 @@
+/* eslint no-trailing-spaces: ["error", { "skipBlankLines": true }]*/
+
 import {createApp} from '@/main'
 
-const {app, router} = createApp()
+const {app, router, store} = createApp()
 
-router.onReady(() => app.$mount('#app'))
+if (window.__INITIAL_STATE__) {
+  store.replaceState(window.__INITIAL_STATE__)
+}
+
+router.onReady(() => {
+  /** 添加路由钩子函数，用于处理 asyncData.
+   *  在初始路由 resolve 后执行，
+   *  以便我们不会二次预取(double-fetch)已有的数据。
+   *  使用 `router.beforeResolve()`，以便确保所有异步组件都 resolve。
+   */
+  router.beforeResolve((to, from, next) => {
+    const matched = router.getMatchedComponents(to)
+    const prevMatched = router.getMatchedComponents(from)
+    
+    let diffed = false
+    const activated = matched.filter((c, i) => {
+      return diffed || (diffed = (prevMatched[i] !== c))
+    })
+    
+    if (!activated.length) {
+      return next()
+    }
+    
+    Promise.all(activated.map(c => {
+      if (c.asyncData) {
+        return c.asyncData({store, route: to})
+      }
+    })).then(() => {
+      next()
+    }).catch(next)
+  })
+  app.$mount('#app')
+})
