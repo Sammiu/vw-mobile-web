@@ -14,7 +14,9 @@ const createBundle = (bundle, clientManifest, template) => {
   return createBundleRenderer(bundle, {
     runInNewContext: false, /** 推荐 */
     template: template, /** 模板html文件 */
-    clientManifest: clientManifest   /** client manifest */
+    clientManifest: clientManifest, /** client manifest */
+    shouldPreload: (file, type) => false,
+    shouldPrefetch: (file, type) => false
   })
 }
 
