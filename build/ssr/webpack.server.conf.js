@@ -1,4 +1,5 @@
 'use strict'
+const utils = require('../utils')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const nodeExternals = require('webpack-node-externals')
@@ -35,7 +36,10 @@ module.exports = merge(baseConfig, {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
       'process.env.VUE_ENV': '"server"'
     }),
-    ...isProduction ? [new ExtractTextPlugin({filename: 'common.[chunkhash].css'})] : [],
+    ...isProduction ? [new ExtractTextPlugin({
+      filename: utils.assetsPath('css/[name].[contenthash].css'),
+      allChunks: true,
+    })] : [],
     // 这是将服务器的整个输出
     // 构建为单个 JSON 文件的插件。
     // 默认文件名为 `vue-ssr-server-bundle.json`
