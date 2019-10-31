@@ -1,36 +1,16 @@
 /* eslint no-trailing-spaces: ["error", { "skipBlankLines": true }]*/
 
+import Qs from 'qs'
 import axios from 'axios'
-import https from 'https'
-import devHost from '../../config/dev-host'
 
-axios.defaults.timeout = 10000
-axios.defaults.proxy = (function () {
-  if (devHost.https) {
-    const proxy = {host: devHost.https.host, port: devHost.https.port}
-    
-    /** 可以配置忽略https的证书认证 */
-    axios.interceptors.request.use(function (config) {
-      config.httpsAgent = new https.Agent({rejectUnauthorized: false})
-      return config
-    })
-    return proxy
-  } else if (devHost.http) {
-    return {host: devHost.http.host, port: devHost.http.port}
-  }
-})()
-
-let cookie = null
-export function setCookies (Cookies) {
-  cookie = Cookies
+/**
+ * 以访问表单的格式提交数据
+ *
+ * @return {Object} Http 自定义头部信息
+ **/
+function getHeaders () {
+  return {}
 }
-
-axios.interceptors.request.use(config => {
-  if (process.env.VUE_ENV === 'server') {
-    config.headers.cookie = cookie
-  }
-  return config
-}, error => Promise.reject(error))
 
 /**
  * 统一处理网络异常
@@ -78,7 +58,7 @@ function processRequest (httpRequest, handleError) {
  * @param {boolean} handleError 是否自己处理异常
  **/
 export function get (url, params, handleError = false) {
-  return processRequest(axios.get(url, {params: params}), handleError)
+  return processRequest(axios.get(url, {params: params, headers: getHeaders()}), handleError)
 }
 
 /**
@@ -88,6 +68,21 @@ export function get (url, params, handleError = false) {
  * @param {boolean} handleError 是否自己处理异常
  **/
 export function post (url, params, handleError = false) {
-  const option = {url: url, method: 'post', data: params}
+  const option = {url: url, method: 'post', data: params, headers: getHeaders()}
+  return processRequest(axios(option), handleError)
+}
+
+/**
+ * 以访问表单的格式提交数据
+ *
+ * @param {String} url 接口地址
+ * @param {Object} params 需要提交的参数
+ * @param {boolean} handleError 是否自己处理异常
+ **/
+export function postWithForm (url, params, handleError = false) {
+  const headers = Object.assign({
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }, getHeaders())
+  const option = {url: url, method: 'post', data: Qs.stringify(params), headers: headers}
   return processRequest(axios(option), handleError)
 }

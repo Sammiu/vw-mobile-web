@@ -1,9 +1,9 @@
 const fs = require('fs')
 const path = require('path')
-// memory-fs可以使webpack将文件写入到内存中，而不是写入到磁盘。
+/** memory-fs可以使webpack将文件写入到内存中，而不是写入到磁盘 */
 const MFS = require('memory-fs')
 const webpack = require('webpack')
-// 监听文件变化，兼容性更好(比fs.watch、fs.watchFile、fsevents)
+/** 监听文件变化，兼容性更好(比fs.watch、fs.watchFile、fsevents) */
 const chokidar = require('chokidar')
 const clientConfig = require('./webpack.client.conf')
 const serverConfig = require('./webpack.server.conf')

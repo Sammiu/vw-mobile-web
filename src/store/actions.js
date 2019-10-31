@@ -1,9 +1,5 @@
-import {login} from '@/api/login'
-
 export default {
   fetchUserInfo ({commit}) {
-    return login().then(item => {
-      commit('UPDATE_USER_INFO', item)
-    })
+    commit('UPDATE_USER_INFO', {username: 'admin1234', token: '44632kkk543k53j45k3534545454'})
   }
 }

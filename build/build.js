@@ -16,7 +16,7 @@ const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 /** 判断编译环境是SSR 在 plugins 移除 HtmlWebpackPlugin, 增加 VueSSRClientPlugin 生成ssr-client-manifest*/
 if (process.env.BUILD_MODE === 'ssr') {
   const index = webpackConfig.plugins.findIndex(plugin => plugin instanceof HtmlWebpackPlugin)
-  if (index > 0) {
+  if (index > -1) {
     webpackConfig.plugins.splice(index, 1)
   }
   webpackConfig.plugins.push(new VueSSRClientPlugin)
