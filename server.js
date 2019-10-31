@@ -39,7 +39,11 @@ if (global.process.env.NODE_ENV === 'production') {
 function renderToString (context) {
   return new Promise((resolve, reject) => {
     renderer.renderToString(context, (err, html) => {
-      err ? reject(err) : resolve(html)
+      if (err) {
+        reject({code: err.code === 404 ? 404 : 500})
+      } else {
+        resolve(html)
+      }
     })
   })
 }
@@ -47,33 +51,45 @@ function renderToString (context) {
 app.use(favicon(path.join(__dirname, 'favicon.ico')))
 
 /** http proxy middle */
-Object.keys(proxyTable).forEach((context) => {
-  const options = proxyTable[context]
-  app.use(proxy(context, options))
-})
+if (global.process.env.NODE_ENV === 'development') {
+  Object.keys(proxyTable).forEach((context) => {
+    const options = proxyTable[context]
+    app.use(proxy(context, options))
+  })
+}
 
 /** response */
 app.use(async (ctx, next) => {
   try {
-    for (let proxyUrl in proxyTable) {
-      if (ctx.url.startsWith(proxyUrl)) {
-        return next()
+    if (global.process.env.NODE_ENV === 'development') {
+      for (let proxyUrl in proxyTable) {
+        if (ctx.url.startsWith(proxyUrl)) {
+          return next()
+        }
       }
     }
     
     /** {{title}} 替换template占位符 */
-    const context = {title: '服务端渲染测试', url: ctx.url, cookies: ctx.cookies.request.headers.cookie}
-    
+    const context = {title: '约跑', url: ctx.url, cookies: ctx.cookies.request.headers.cookie}
     /** 将服务器端渲染好的html返回给客户端 */
     ctx.body = await renderToString(context)
-    
-    /** 设置请求头 */
     ctx.set('Content-Type', 'text/html')
-    ctx.set('Server', 'Koa2 server side render')
   } catch (e) {
-    /** 如果没找到，放过请求，继续运行后面的中间件 */
-    return next()
+    /** 如果没找到，拦截404 500错误, 否则继续运行后面的中间件 */
+    if (e.code === 404) {
+      ctx.body = fs.readFileSync('./404.html', 'utf-8')
+      ctx.set('Content-Type', 'text/html')
+    } else if (e.code === 500) {
+      ctx.body = fs.readFileSync('./500.html', 'utf-8').repla
+      ctx.set('Content-Type', 'text/html')
+    } else {
+      return next()
+    }
   }
 })
 
-app.listen(3001)
+app.on('error', (error) => {
+  console.log(error)
+})
+
+app.listen(3366)

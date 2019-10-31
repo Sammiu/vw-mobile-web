@@ -3,7 +3,6 @@ import store from '@/store'
 import Router from 'vue-router'
 import {UPDATE_DIRECTION} from '@/store/types'
 import Page1 from '@/pages/page1/Index'
-import NotFount from '@/pages/notFound/Index'
 
 const Page2 = () => import('@/pages/page2/Index')
 const Page3 = () => import('@/pages/page3/Index')
@@ -16,9 +15,8 @@ const router = new Router({
   routes: [
     {path: '/', name: 'Page1', component: Page1},
     {path: '/page2', name: 'Page2', meta: {requireAuth: true}, component: Page2},
-    {path: '/page3', name: 'Page3', component: Page3},
-    {path: '/page4', name: 'Page4', component: Page4},
-    {path: '*', name: 'NotFount', component: NotFount}
+    {path: '/page3', name: 'Page3', meta: {requireAuth: true}, component: Page3},
+    {path: '/page4', name: 'Page4', meta: {requireAuth: true}, component: Page4}
   ]
 })
 

@@ -1,7 +1,7 @@
 /* eslint no-trailing-spaces: ["error", { "skipBlankLines": true }]*/
 
 import {createApp} from '@/main'
-import {setCookies} from '@/api/create-api-server'
+import {setCookies} from '@/api/api-server'
 
 export default function (context) {
   return new Promise((resolve, reject) => {
