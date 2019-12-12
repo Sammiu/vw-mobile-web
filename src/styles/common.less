@@ -1,17 +1,19 @@
 .image__dpr(@img) {
-  background-image: url(@img);
   background-size: contain;
+  @media only screen and (-webkit-max-device-pixel-ratio: 1.9999999) {
+    background-image: url(@img);
+  }
 
   @media only screen and (-webkit-min-device-pixel-ratio: 2) {
-    @_img: replace("@{img}", '\.png$', '@2x.png');
+    @_img: replace('@{img}', '\.png$', '@2x.png');
 
-    background-image: url("@{_img}");
+    background-image: url('@{_img}');
   }
 
   @media only screen and (-webkit-min-device-pixel-ratio: 3) {
-    @_img: replace("@{img}", '\.png$', '@3x.png');
+    @_img: replace('@{img}', '\.png$', '@3x.png');
 
-    background-image: url("@{_img}");
+    background-image: url('@{_img}');
   }
 }
 
@@ -22,21 +24,37 @@
  * @param @radius
  */
 .border-top__dpr(@width,@color,@radius:0) {
+  border-top: @width solid @color;
+
   &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    height: @width;
-    width: 100%;
-    background-color: @color;
-    transform-origin: 50% 0;
-    border-radius: @radius;
     @media only screen and(-webkit-min-device-pixel-ratio: 2) {
-      transform: scaleY(0.5);
+      content: '';
+      width: 200%;
+      height: 200%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-top: @width solid @color;
+      transform: scale(0.5);
+      transform-origin: 0 0;
+      box-sizing: border-box;
+      pointer-events: none;
+      border-radius: @radius;
     }
 
     @media only screen and (-webkit-min-device-pixel-ratio: 3) {
-      transform: scaleY(0.33);
+      content: "";
+      width: 300%;
+      height: 300%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-top: @width solid @color;
+      transform: scale(0.33);
+      transform-origin: 0 0;
+      border-radius: @radius;
+      box-sizing: border-box;
+      pointer-events: none;
     }
   }
 }
@@ -52,7 +70,7 @@
 
   &:before {
     @media only screen and(-webkit-min-device-pixel-ratio: 2) {
-      content: "";
+      content: '';
       width: 200%;
       height: 200%;
       position: absolute;
@@ -81,15 +99,15 @@
       pointer-events: none;
     }
   }
-  @media only screen and(-webkit-min-device-pixel-ratio: 2) {
-    border-color: rgba(0, 0, 0, 0);
-  }
-
-  @media only screen and (-webkit-min-device-pixel-ratio: 3) {
-    border-color: rgba(0, 0, 0, 0);
-  }
 }
 
+.fixed-full-screen {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
 
 
 

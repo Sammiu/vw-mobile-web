@@ -2,8 +2,10 @@ import Vue from 'vue'
 import store from '@/store'
 import Router from 'vue-router'
 import {UPDATE_DIRECTION} from '@/store/types'
-import Page1 from '@/pages/page1/Index'
+import Main from '@/pages/main/Index'
 
+const Login = () => import('@/pages/login/Index')
+const Page1 = () => import('@/pages/page1/Index')
 const Page2 = () => import('@/pages/page2/Index')
 const Page3 = () => import('@/pages/page3/Index')
 const Page4 = () => import('@/pages/page4/Index')
@@ -13,7 +15,9 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history',
   routes: [
-    {path: '/', name: 'Page1', component: Page1},
+    {path: '/', name: 'Page1', component: Main},
+    {path: '/login', name: 'login', meta: {requireAuth: true}, component: Login},
+    {path: '/page1', name: 'Page1', meta: {requireAuth: true}, component: Page1},
     {path: '/page2', name: 'Page2', meta: {requireAuth: true}, component: Page2},
     {path: '/page3', name: 'Page3', meta: {requireAuth: true}, component: Page3},
     {path: '/page4', name: 'Page4', meta: {requireAuth: true}, component: Page4}

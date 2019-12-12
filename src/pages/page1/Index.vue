@@ -46,7 +46,7 @@
 </script>
 
 <style scoped lang="less">
-  @import "../../styles/common.less";
+  @import '../../styles/common.less';
 
   .bg__wrap {
     padding: 10px 0;

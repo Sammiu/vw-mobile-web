@@ -5,7 +5,7 @@
   "author": "dq <251646075@qq.com>",
   "private": true,
   "scripts": {
-    "server": "cross-env NODE_ENV=production node server.js",
+    "server": "cross-env NODE_ENV=production pm2 start server.js",
     "dev:ssr": "node server.js",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
@@ -21,6 +21,7 @@
     "axios": "^0.19.0",
     "babel-polyfill": "^6.26.0",
     "cssnano": "^4.1.10",
+    "js-cookie": "^2.2.1",
     "koa": "^2.10.0",
     "koa-server-http-proxy": "^0.1.0",
     "postcss-aspect-ratio-mini": "^1.0.1",

@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import store from './store/'
 import 'babel-polyfill'
+import MessageBox from './components/messageBox'
 
 Vue.config.productionTip = false
 
@@ -12,7 +13,10 @@ export function createApp () {
   const app = new Vue({
     router,
     store,
-    render: h => h(App)
+    render: h => h(App),
+    mounted () {
+      Vue.use(MessageBox)
+    }
   })
   return {app, router, store}
 }

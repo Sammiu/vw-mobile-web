@@ -11,8 +11,8 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/ms/api/': {
-        target: 'http://192.168.2.235:8765',
+      '/api/mobile/': {
+        target: 'http://192.168.2.135:9996',
         secure: false,
         changeOrigin: true
       }

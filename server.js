@@ -40,7 +40,7 @@ function renderToString (context) {
   return new Promise((resolve, reject) => {
     renderer.renderToString(context, (err, html) => {
       if (err) {
-        reject({code: err.code === 404 ? 404 : 500})
+        reject({code: err.code === 404 ? 404 : 500, err: err})
       } else {
         resolve(html)
       }
@@ -51,12 +51,12 @@ function renderToString (context) {
 app.use(favicon(path.join(__dirname, 'favicon.ico')))
 
 /** http proxy middle */
-if (global.process.env.NODE_ENV === 'development') {
-  Object.keys(proxyTable).forEach((context) => {
-    const options = proxyTable[context]
-    app.use(proxy(context, options))
-  })
-}
+// if (global.process.env.NODE_ENV === 'development') {
+Object.keys(proxyTable).forEach((context) => {
+  const options = proxyTable[context]
+  app.use(proxy(context, options))
+})
+// }
 
 /** response */
 app.use(async (ctx, next) => {
@@ -76,13 +76,12 @@ app.use(async (ctx, next) => {
     ctx.set('Content-Type', 'text/html')
   } catch (e) {
     /** 如果没找到，拦截404 500错误, 否则继续运行后面的中间件 */
-    if (e.code === 404) {
-      ctx.body = fs.readFileSync('./404.html', 'utf-8')
-      ctx.set('Content-Type', 'text/html')
-    } else if (e.code === 500) {
-      ctx.body = fs.readFileSync('./500.html', 'utf-8').repla
+    if (e.code === 404 || e.code === 500) {
+      ctx.body = fs.readFileSync(`./${e.code}.html`, 'utf-8')
+      ctx.status = e.code
       ctx.set('Content-Type', 'text/html')
     } else {
+      console.log(e, ctx.url)
       return next()
     }
   }

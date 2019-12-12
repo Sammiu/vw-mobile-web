@@ -39,7 +39,7 @@ function processRequest (httpRequest, handleError) {
       const item = response.data
       if (response.status === 200) {
         if (item.success) {
-          resolve(item.result)
+          resolve(item.data)
         } else {
           handleNetworkError(reject, item.error, handleError)
         }
@@ -57,7 +57,7 @@ function processRequest (httpRequest, handleError) {
  * @param {Object} params 需要提交的参数
  * @param {boolean} handleError 是否自己处理异常
  **/
-export function get (url, params, handleError = false) {
+export function get (url, params = undefined, handleError = false) {
   return processRequest(axios.get(url, {params: params, headers: getHeaders()}), handleError)
 }
 
