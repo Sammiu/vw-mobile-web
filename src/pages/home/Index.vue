@@ -6,16 +6,10 @@
 
 <script>
 
+
   export default {
     data () {
       return {
-        viewName: 'home'
-      }
-    },
-    tabBarItemSelectedHandle (activeName) {
-      if (this.activeName !== activeName) {
-        this.activeName = activeName
-        this.$router.push(this.mappingActivePage[activeName])
       }
     }
   }

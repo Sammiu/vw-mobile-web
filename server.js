@@ -3,12 +3,16 @@ const app = new Koa()
 const fs = require('fs')
 const path = require('path')
 const favicon = require('koa-favicon')
-const proxy = require('koa-server-http-proxy')
 const {createBundleRenderer} = require('vue-server-renderer')
 const setupDevServer = require('./build/ssr/setup-dev-server')
-const proxyTable = require('./config').dev.proxyTable
 
 const resolve = file => path.resolve(__dirname, file)
+
+const setReponseError = (ctx, code) => {
+  ctx.body = fs.readFileSync(`./${code}.html`, 'utf-8')
+  ctx.status = code
+  ctx.set('Content-Type', 'text/html')
+}
 
 const createBundle = (bundle, clientManifest, template) => {
   return createBundleRenderer(bundle, {
@@ -50,40 +54,20 @@ function renderToString (context) {
 
 app.use(favicon(path.join(__dirname, 'favicon.ico')))
 
-/** http proxy middle */
-// if (global.process.env.NODE_ENV === 'development') {
-Object.keys(proxyTable).forEach((context) => {
-  const options = proxyTable[context]
-  app.use(proxy(context, options))
-})
-// }
 
-/** response */
 app.use(async (ctx, next) => {
   try {
-    if (global.process.env.NODE_ENV === 'development') {
-      for (let proxyUrl in proxyTable) {
-        if (ctx.url.startsWith(proxyUrl)) {
-          return next()
-        }
-      }
-    }
-    
-    /** {{title}} 替换template占位符 */
     const context = {title: '约跑', url: ctx.url, cookies: ctx.cookies.request.headers.cookie}
     /** 将服务器端渲染好的html返回给客户端 */
     ctx.body = await renderToString(context)
     ctx.set('Content-Type', 'text/html')
   } catch (e) {
-    /** 如果没找到，拦截404 500错误, 否则继续运行后面的中间件 */
-    if (e.code === 404 || e.code === 500) {
-      ctx.body = fs.readFileSync(`./${e.code}.html`, 'utf-8')
-      ctx.status = e.code
-      ctx.set('Content-Type', 'text/html')
-    }else if (e.code === 1001){
+    if (e.code === 404) {
+      setReponseError(ctx, 404)
+    } else if (e.code === 1001) {
       ctx.response.redirect('/login')
     } else {
-      return next()
+      setReponseError(ctx, 500)
     }
   }
 })

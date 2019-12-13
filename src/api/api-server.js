@@ -4,7 +4,7 @@ import axios from 'axios'
 import https from 'https'
 import devHost from '../../config/dev-host'
 
-axios.defaults.timeout = 10000
+axios.defaults.timeout = 20000
 axios.defaults.proxy = (function () {
   if (devHost.https) {
     const proxy = {host: devHost.https.host, port: devHost.https.port}

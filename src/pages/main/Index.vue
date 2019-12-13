@@ -43,6 +43,7 @@
 </template>
 
 <script>
+  import service from '@/api/login'
   import Home from '../home/Index'
   import Project from '../project/Index'
   import Statistics from '../statistics/Index'
@@ -59,6 +60,9 @@
       project: Project,
       statistics: Statistics,
       aboutMe: AboutMe
+    },
+    asyncData () {
+      return service.checkLogin()
     }
   }
 </script>
