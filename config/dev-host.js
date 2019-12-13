@@ -1,3 +1,3 @@
 export default {
-  http: {host: '192.168.2.135', port: '9996'}
+  http: {host: '49.233.149.56', port: '9996'}
 }
