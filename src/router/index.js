@@ -15,7 +15,7 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history',
   routes: [
-    {path: '/', name: 'Page1', component: Main},
+    {path: '/', name: 'main', component: Main},
     {path: '/login', name: 'login', meta: {requireAuth: true}, component: Login},
     {path: '/page1', name: 'Page1', meta: {requireAuth: true}, component: Page1},
     {path: '/page2', name: 'Page2', meta: {requireAuth: true}, component: Page2},

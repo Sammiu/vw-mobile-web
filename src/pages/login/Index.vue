@@ -11,7 +11,7 @@
         <input class="login-form_input" type="password" v-model="password" placeholder="请输入密码">
       </div>
       <div class="login-form__item">
-        <button class="login-button" @click="loginHandle">登 录</button>
+        <button class="login-button" @click="loginHandle" :disable="btnDisable">登 录</button>
       </div>
     </div>
   </div>
@@ -23,8 +23,13 @@
   export default {
     data () {
       return {
-        accNumber: 'admin',
-        password: 'tt123456'
+        accNumber: null,
+        password: null
+      }
+    },
+    computed: {
+      btnDisable () {
+        return !(this.accNumber && this.password)
       }
     },
     methods: {
@@ -39,8 +44,6 @@
       getParams () {
         return {accNumber: this.accNumber, password: this.password}
       }
-    },
-    mounted () {
     }
   }
 </script>

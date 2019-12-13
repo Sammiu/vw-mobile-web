@@ -62,7 +62,15 @@
       aboutMe: AboutMe
     },
     asyncData () {
-      return service.checkLogin()
+      return new Promise((resolve, reject) => {
+        service.checkLogin().then(resolve, err => {
+          console.log(err)
+          reject(err)
+        }).catch(e => {
+          console.log(e)
+          reject(e)
+        })
+      })
     }
   }
 </script>

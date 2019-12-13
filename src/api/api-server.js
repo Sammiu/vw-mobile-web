@@ -27,8 +27,9 @@ export function setCookies (Cookies) {
 }
 
 axios.interceptors.request.use(config => {
-  if (process.env.VUE_ENV === 'server') {
+  if (process.env.VUE_ENV === 'server' && cookie) {
     config.headers.cookie = cookie
   }
+  console.log(process.env.VUE_ENV, cookie)
   return config
 }, error => Promise.reject(error))
