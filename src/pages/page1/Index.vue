@@ -11,7 +11,7 @@
       <div class="bg"></div>
     </div>
     <div class="user-data__wrap">
-      <div>用户名：{{ userInfo.username }}</div>
+      <div>用户名：{{ userInfo.nickName }}</div>
       <div>授权码：{{ userInfo.token }}</div>
     </div>
   </div>

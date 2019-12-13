@@ -40,7 +40,7 @@ function renderToString (context) {
   return new Promise((resolve, reject) => {
     renderer.renderToString(context, (err, html) => {
       if (err) {
-        reject({code: err.code === 404 ? 404 : 500, err: err})
+        reject({code: err.code || 500, err: err})
       } else {
         resolve(html)
       }
@@ -80,8 +80,9 @@ app.use(async (ctx, next) => {
       ctx.body = fs.readFileSync(`./${e.code}.html`, 'utf-8')
       ctx.status = e.code
       ctx.set('Content-Type', 'text/html')
+    }else if (e.code === 1001){
+      ctx.response.redirect('/login')
     } else {
-      console.log(e, ctx.url)
       return next()
     }
   }

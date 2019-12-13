@@ -46,7 +46,7 @@
 </script>
 
 <style scoped lang="less">
-  @import "../../styles/common.less";
+  @import '../../styles/common.less';
 
   .login-header__wrap {
     display: flex;
@@ -78,10 +78,8 @@
   .login-form__item {
     position: relative;
     display: flex;
-    margin: 30px 0;
+    padding: 30px 0;
     width: 75%;
-    .border_dpr(1px, #50b0f7, 100px);
-    border-radius: 100px;
     align-items: center;
     justify-content: center;
 
@@ -99,9 +97,11 @@
       padding: 0 24px 0 50px;
       width: 100%;
       height: 70px;
-      border-color: transparent;
+      border: 1px solid #20a0ff;
       border-radius: 100px;
       font-size: inherit;
+      -webkit-appearance: none;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
       &::-webkit-input-placeholder {
         color: #bbb;
@@ -111,16 +111,16 @@
     .login-button {
       position: relative;
       color: #fff;
-      height: 64px;
+      height: 70px;
       width: 100%;
-      .border_dpr(1px, #20a0ff, 100px);
+      border: 1px solid #20a0ff;
       background-color: #20a0ff;
       border-radius: 100px;
       box-sizing: content-box;
       font-size: 32px;
 
       &:active {
-        .border_dpr(1px, #1d90e6, 100px);
+        border: 1px solid #1d90e6;
         background: #1d90e6;
       }
     }
