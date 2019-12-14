@@ -1,20 +1,24 @@
 <template>
-  <transition>
-    <div class="message-box__wrapper" v-show="visible">
-      <div class="message-box-mask" :style="{zIndex: maskZIndex}"></div>
-      <div class="message-box__content" :style="{zIndex: contentZIndex}">
-        <div class="message-box-header" v-show="options.title">
-          {{ options.title }}
-        </div>
-        <div class="message-box-body">
-          {{ message }}
-        </div>
-        <div class="message-box-footer" @click.stop="btnSureClickHandle">
-          <span>确定</span>
+  <div>
+    <transition name="fade">
+      <div class="message-box-mask" :style="{zIndex: maskZIndex}" v-show="visible"></div>
+    </transition>
+    <transition name="bounce">
+      <div class="message-box__wrapper" v-show="visible" :style="{zIndex: contentZIndex}">
+        <div class="message-box__content">
+          <div class="message-box-header" v-show="options.title">
+            {{ options.title }}
+          </div>
+          <div class="message-box-body">
+            {{ message }}
+          </div>
+          <div class="message-box-footer" @click.stop="btnSureClickHandle">
+            <span>确定</span>
+          </div>
         </div>
       </div>
-    </div>
-  </transition>
+    </transition>
+  </div>
 </template>
 
 <script>
@@ -87,10 +91,32 @@
     color: #2dc1ff;
     .border-top__dpr(1px, #e2e2e2);
     text-align: center;
+  }
 
-    &:active {
-      background-color: #f9f9f9;
-      border-radius: 0 0 10px 10px;
+  .bounce-enter-active {
+    animation: bounce-in .3s;
+  }
+
+  .bounce-leave-active {
+    animation: bounce-in .25s reverse;
+  }
+
+  @keyframes bounce-in {
+    0% {
+      transform: scale(0.3);
+      opacity: 0;
     }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .35s;
+  }
+
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
   }
 </style>

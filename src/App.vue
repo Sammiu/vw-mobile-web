@@ -10,7 +10,6 @@
 
 <script>
   import {mapState} from 'vuex'
-  import MessageBox from './components/messageBox/MessageBox'
 
   export default {
     data () {
@@ -24,9 +23,6 @@
           mine: '/page4'
         },
       }
-    },
-    components: {
-      MessageBox
     },
     computed: {
       ...mapState({

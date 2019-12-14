@@ -14,11 +14,14 @@
         <button class="login-button" @click="loginHandle" :disable="btnDisable">登 录</button>
       </div>
     </div>
+    <Loading/>
   </div>
 </template>
 
 <script>
   import service from '@/api/login'
+
+  import Loading from '@/components/loading/Loading'
 
   export default {
     data () {
@@ -32,18 +35,29 @@
         return !(this.accNumber && this.password)
       }
     },
+    components: {
+      Loading
+    },
     methods: {
       loginHandle () {
+        this.$loadingBox.show()
         const params = this.getParams()
         service.login(params).then(res => {
           this.$router.push('/')
         }, err => {
+          this.$loadingBox.hide()
           this.$message.show(err.message)
         })
       },
       getParams () {
         return {accNumber: this.accNumber, password: this.password}
       }
+    },
+    deactivated () {
+      this.$loadingBox.hide()
+    },
+    destroyed () {
+      this.$loadingBox.hide()
     }
   }
 </script>
@@ -121,11 +135,6 @@
       border-radius: 100px;
       box-sizing: content-box;
       font-size: 32px;
-
-      &:active {
-        border: 1px solid #1d90e6;
-        background: #1d90e6;
-      }
     }
   }
 </style>
