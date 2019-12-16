@@ -142,6 +142,7 @@
       box-sizing: content-box;
       font-size: 32px;
       outline: none;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
       &[disabled] {
         border: 1px solid #ccc;
