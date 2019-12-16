@@ -41,13 +41,17 @@
     },
     methods: {
       show (message, options = {}) {
-        this.options = options || {}
-        this.message = message
-        this.zIndex = this.zIndex + 1
-        this.visible = true
+        if (this.visible === false) {
+          this.options = options || {}
+          this.message = message
+          this.zIndex = this.zIndex + 1
+          this.visible = true
+        }
       },
       btnSureClickHandle () {
-        this.visible = false
+        if (this.visible) {
+          this.visible = false
+        }
       }
     }
   }

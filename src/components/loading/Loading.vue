@@ -20,10 +20,14 @@
     },
     methods: {
       show () {
-        this.visible = true
+        if (this.visible === false) {
+          this.visible = true
+        }
       },
       hide () {
-        this.visible = false
+        if (this.visible) {
+          this.visible = false
+        }
       }
     }
   }
