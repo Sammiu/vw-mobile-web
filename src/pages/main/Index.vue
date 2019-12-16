@@ -1,7 +1,7 @@
 <template>
   <div>
     <keep-alive>
-      <component :is="viewName"></component>
+      <component class="main-content" :is="viewName"></component>
     </keep-alive>
     <div class="tab-bar__wrap">
       <div class="tab-bar_item" :class="{selected: viewName === 'home'}" @click.stop="viewName = 'home'">
@@ -76,6 +76,11 @@
 <style lang="less">
   @import '../../styles/common.less';
 
+  .main-content {
+    position: relative;
+    padding-bottom: 110px;
+  }
+
   .tab-bar__wrap {
     position: fixed;
     display: flex;
@@ -104,13 +109,5 @@
     &.selected {
       background: #7bd7fd;
     }
-  }
-
-  .home {
-    position: relative;
-    margin: 0 5px 0 0;
-    width: 36px;
-    height: 36px;
-    .image__dpr('~/static/img/home_icon.png')
   }
 </style>
