@@ -3,7 +3,7 @@
     <transition name="fade">
       <div class="message-box-mask" :style="{zIndex: maskZIndex}" v-show="visible"></div>
     </transition>
-    <transition name="bounce">
+    <transition name="fade-scale">
       <div class="message-box__wrapper" v-show="visible" :style="{zIndex: contentZIndex}">
         <div class="message-box__content">
           <div class="message-box-header" v-show="options.title">
@@ -97,15 +97,15 @@
     text-align: center;
   }
 
-  .bounce-enter-active {
-    animation: bounce-in .3s;
+  .fade-scale-enter-active {
+    animation: fade-scale-in .3s;
   }
 
-  .bounce-leave-active {
-    animation: bounce-in .25s reverse;
+  .fade-scale-leave-active {
+    animation: fade-scale-in .25s reverse;
   }
 
-  @keyframes bounce-in {
+  @keyframes fade-scale-in {
     0% {
       transform: scale(0.3);
       opacity: 0;

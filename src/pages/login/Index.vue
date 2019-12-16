@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <div class="login-header__wrap">
       <div class="header-icon"></div>
     </div>
@@ -11,7 +11,7 @@
         <input class="login-form_input" type="password" v-model="password" placeholder="请输入密码">
       </div>
       <div class="login-form__item">
-        <button class="login-button" @click="loginHandle" :disable="btnDisable">登 录</button>
+        <button class="login-button" @click="loginHandle" :disabled="btnDisable">登 录</button>
       </div>
     </div>
     <Loading/>
@@ -64,6 +64,11 @@
 
 <style scoped lang="less">
   @import '../../styles/common.less';
+
+  .container {
+    width: 100%;
+    height: 100%;
+  }
 
   .login-header__wrap {
     display: flex;
@@ -137,6 +142,11 @@
       box-sizing: content-box;
       font-size: 32px;
       outline: none;
+
+      &[disabled] {
+        border: 1px solid #ccc;
+        background-color: #ccc;
+      }
     }
   }
 </style>
