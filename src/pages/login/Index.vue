@@ -117,6 +117,7 @@
       border: 1px solid #20a0ff;
       border-radius: 100px;
       font-size: inherit;
+      outline: none;
       -webkit-appearance: none;
       -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
@@ -135,6 +136,7 @@
       border-radius: 100px;
       box-sizing: content-box;
       font-size: 32px;
+      outline: none;
     }
   }
 </style>
