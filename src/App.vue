@@ -2,7 +2,7 @@
   <div id="app">
     <transition :name="'vux-pop-' + (direction === 'forward' ? 'in' : 'out')">
       <keep-alive :include="['page1', 'page2', 'page3', 'notFound']">
-        <router-view class="content__wrap"></router-view>
+        <router-view></router-view>
       </keep-alive>
     </transition>
   </div>
@@ -12,35 +12,10 @@
   import {mapState} from 'vuex'
 
   export default {
-    data () {
-      return {
-        activeName: null,
-        transitionName: null,
-        mappingActivePage: {
-          home: '/',
-          project: '/page2',
-          statistical: '/page3',
-          mine: '/page4'
-        },
-      }
-    },
     computed: {
       ...mapState({
         direction: state => state.mutations.direction,
       })
-    },
-    methods: {
-      setActiveName (path) {
-        for (let key in this.mappingActivePage) {
-          if (this.mappingActivePage.hasOwnProperty(key) && this.mappingActivePage[key] === path) {
-            this.activeName = key
-            return
-          }
-        }
-      }
-    },
-    mounted () {
-      this.setActiveName(this.$route.path)
     }
   }
 </script>
@@ -54,25 +29,15 @@
   }
 
   html {
-    /*width: 100%;*/
-    /*height: 100%;*/
     touch-action: manipulation;
   }
 
   body {
-    /*width: 100%;*/
-    /*height: 100%;*/
     font-size: 28px;
     color: #333;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-
-
-  .content__wrap, #app {
-    width: 100%;
-    height: 100%;
   }
 
   .icon {

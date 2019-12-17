@@ -1,5 +1,5 @@
 <template>
-  <div class="ms-home-container">
+  <PullToRefresh @onPullDownRefresh="onPullDownRefresh">
     <div class="ms-home-header__wrapper">
       <div class="home-header__item">
         <div class="project-info">
@@ -54,15 +54,24 @@
     <div class="home-footer_wrapper">
       <div v-for="num in count" class="list-item">项目--{{ num }}</div>
     </div>
-  </div>
+  </PullToRefresh>
 </template>
 
 <script>
+  import PullToRefresh from '@/components/pullTopRefresh/PullRefresh'
 
   export default {
     data () {
       return {
         count: 20
+      }
+    },
+    components: {
+      PullToRefresh
+    },
+    methods: {
+      onPullDownRefresh (done) {
+        setTimeout(done, 3000)
       }
     }
   }
