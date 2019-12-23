@@ -34,7 +34,7 @@ module.exports = merge(baseConfig, {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-      'process.env.VUE_ENV': 'server'
+      'process.env.VUE_ENV': '"server"'
     }),
     ...isProduction ? [new ExtractTextPlugin({
       filename: utils.assetsPath('css/[name].[contenthash].css'),
