@@ -24,6 +24,7 @@
     },
     data () {
       return {
+        moving: false,
         YDistance: 0,
         refreshingBoxHeight: null,
         pullState: NONE_REFRESHING
@@ -42,7 +43,7 @@
       },
       style () {
         const style = {transform: `translate3d(0, ${this.YDistance}px, 0)`}
-        if (this.pullState === REFRESHING) {
+        if (this.moving === false) {
           style.transition = 'all 300ms ease-out'
         }
         return style
@@ -80,6 +81,7 @@
 
         const moveY = evt.targetTouches[0].clientY - this.startY
         if (moveY > 0) {
+          this.moving = true
           evt.preventDefault()
           this.YDistance = Math.pow(moveY, 0.8)
           if (this.YDistance > this.refreshingBoxHeight) {
@@ -95,6 +97,7 @@
       },
       touchEnd (evt) {
         this.startY = null
+        this.moving = false
         evt.canMove = false
 
         if (this.pullState === REFRESHING) return
@@ -148,8 +151,11 @@
     position: relative;
 
     .pull-refreshing__wrapper {
+      position: fixed;
       display: flex;
-      margin-top: -35vh;
+      top: -35vh;
+      right: 0;
+      left: 0;
       height: 35vh;
       color: #666;
       background: #f1f1f1;

@@ -110,4 +110,10 @@
       background: #7bd7fd;
     }
   }
+
+  .icon {
+    margin: 0 5px 0 0;
+    height: 34px;
+    width: 34px;
+  }
 </style>
