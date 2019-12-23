@@ -24,8 +24,7 @@
     },
     data () {
       return {
-        moving: false,
-        moveDistance: 0,
+        YDistance: 0,
         refreshingBoxHeight: null,
         pullState: NONE_REFRESHING
       }
@@ -42,8 +41,8 @@
         }
       },
       style () {
-        const style = {transform: `translate3d(0, ${this.moveDistance}px, 0)`}
-        if (this.moving === false) {
+        const style = {transform: `translate3d(0, ${this.YDistance}px, 0)`}
+        if (this.pullState === REFRESHING) {
           style.transition = 'all 300ms ease-out'
         }
         return style
@@ -56,51 +55,53 @@
       }
     },
     methods: {
+      triggerLoading () {
+        this.pullState = REFRESHING
+        this.YDistance = this.refreshingBoxHeight
+        this.emitRefreshEvent()
+      },
+      emitRefreshEvent () {
+        this.$emit('onPullDownRefresh', () => {
+          this.YDistance = 0
+          this.pullState = NONE_REFRESHING
+        })
+      },
       touchStart (evt) {
         if (this.pullState === NONE_REFRESHING) {
-          this.moveDistance !== 0 && (this.moveDistance = 0)
+          this.YDistance !== 0 && (this.YDistance = 0)
           this.recordStartYAxis(this.getScrollTop() <= 0, evt)
         }
       },
       touchMove (evt) {
-        if (this.pullState === REFRESHING) return
-
-        const scrollTop = this.getScrollTop()
-        if (scrollTop > 0) return
-
+        if (this.pullState === REFRESHING || this.getScrollTop() > 0) {
+          return
+        }
         this.recordStartYAxis(this.startY === null, evt)
 
-        const move = evt.targetTouches[0].clientY - this.startY
-
-        if (move > 0) {
+        const moveY = evt.targetTouches[0].clientY - this.startY
+        if (moveY > 0) {
           evt.preventDefault()
-          if (this.moving === false) {
-            this.moving = true
-          }
-          this.moveDistance = Math.pow(move, 0.8)
-          if (this.moveDistance > this.refreshingBoxHeight) {
-            if (this.pullState === READY_REFRESH) return
-            this.pullState = READY_REFRESH
+          this.YDistance = Math.pow(moveY, 0.8)
+          if (this.YDistance > this.refreshingBoxHeight) {
+            if (this.pullState !== READY_REFRESH) {
+              this.pullState = READY_REFRESH
+            }
           } else {
-            if (this.pullState === NONE_REFRESHING) return
-            this.pullState = NONE_REFRESHING
+            if (this.pullState !== NONE_REFRESHING) {
+              this.pullState = NONE_REFRESHING
+            }
           }
         }
       },
       touchEnd (evt) {
-        evt.canMove = false
         this.startY = null
-        if (this.pullState === REFRESHING) return true
-        this.moving = false
-        if (this.moveDistance > this.refreshingBoxHeight) {
-          this.pullState = REFRESHING
-          this.moveDistance = this.refreshingBoxHeight
-          this.$emit('onPullDownRefresh', () => {
-            this.moveDistance = 0
-            this.pullState = NONE_REFRESHING
-          })
+        evt.canMove = false
+
+        if (this.pullState === REFRESHING) return
+        if (this.YDistance > this.refreshingBoxHeight) {
+          this.triggerLoading()
         } else {
-          this.moveDistance = 0
+          this.YDistance = 0
         }
       },
       addPullDownEventListener () {
