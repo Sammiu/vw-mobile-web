@@ -16,7 +16,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': require('../../config/dev.env'),
-      'process.env.VUE_ENV': '"client"'
+      'process.env.VUE_ENV': 'client'
     }),
     new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
     new webpack.NoEmitOnErrorsPlugin(),
