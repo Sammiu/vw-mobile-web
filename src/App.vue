@@ -2,7 +2,7 @@
   <div id="app">
     <transition :name="'vux-pop-' + (direction === 'forward' ? 'in' : 'out')">
       <keep-alive :include="['page1', 'page2', 'page3', 'notFound']">
-        <router-view></router-view>
+        <router-view class="content__wrap"></router-view>
       </keep-alive>
     </transition>
   </div>
@@ -29,14 +29,10 @@
   }
 
   html {
-    width: 100%;
-    height: 100%;
     touch-action: manipulation;
   }
 
   body {
-    width: 100%;
-    height: 100%;
     font-size: 28px;
     color: #333;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
@@ -44,9 +40,9 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  #app {
-    width: 100%;
-    height: 100%;
+  #app, .content__wrap {
+    width: 100vw;
+    height: 100vh;
   }
 
   .vux-pop-out-enter-active,
@@ -59,7 +55,6 @@
     top: 0;
     position: absolute;
     backface-visibility: hidden;
-    perspective: 1000;
   }
 
   .vux-pop-out-enter {

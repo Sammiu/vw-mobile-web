@@ -26,25 +26,16 @@ const router = new Router({
 
 let pageStack = null
 
+if (process.env.VUE_ENV === 'client') {
+  pageStack = {'/': {form: '/login', direction: 'forward'}}
+}
+
 router.beforeEach(function (to, from, next) {
-  if (process.env.VUE_ENV === 'client') {
-    if (!Array.isArray(pageStack)) {
-      pageStack = []
-    }
-    if (to.fullPath === '/') {
-      pageStack.length = 0
-      pageStack.unshift(to)
-      store.commit(UPDATE_DIRECTION, {direction: 'reverse'})
-    } else {
-      const itemIndex = pageStack.findIndex(o => o.fullPath === to.fullPath)
-      if (itemIndex > -1) {
-        pageStack.splice(itemIndex, pageStack.length - itemIndex - 1)
-        store.commit(UPDATE_DIRECTION, {direction: 'reverse'})
-      } else {
-        pageStack.push(to)
-        store.commit(UPDATE_DIRECTION, {direction: 'forward'})
-      }
-    }
+  if (pageStack && pageStack.hasOwnProperty(to.path)) {
+    const item = pageStack[to.path]
+    store.commit(UPDATE_DIRECTION, {direction: item.form === from.path ? item.direction : ''})
+  } else {
+    store.commit(UPDATE_DIRECTION, {direction: ''})
   }
   if (/\/http/.test(to.path)) {
     let url = to.path.split('http')[1]
