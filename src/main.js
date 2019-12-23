@@ -8,6 +8,11 @@ import 'babel-polyfill'
 import Loading from './components/loading'
 import MessageBox from './components/messageBox'
 
+if (process.env.VUE_ENV === 'client') {
+  Vue.use(Loading)
+  Vue.use(MessageBox)
+}
+
 Vue.config.productionTip = false
 
 export function createApp () {
@@ -16,8 +21,6 @@ export function createApp () {
     store,
     render: h => h(App),
     mounted () {
-      Vue.use(Loading)
-      Vue.use(MessageBox)
     }
   })
   return {app, router, store}

@@ -1,7 +1,10 @@
 <template>
   <div class="pull-refresh" ref="scrollBox">
-    <div class="pull-refreshing__wrapper" :style="style" ref="refreshingBox">
-      {{ pullState === noneRefreshing ? '下拉刷新' : '正在加载中...' }}
+    <div class="pull-refreshing__wrapper" :style="style">
+      <div class="pull-refreshing__content" ref="refreshingBox">
+        <div class="refresh-loading-bar" :class="{animation: hasAnimation}"></div>
+        <p>{{ refreshingText}}</p>
+      </div>
     </div>
     <div :style="contentStyle">
       <slot/>
@@ -28,18 +31,28 @@
       }
     },
     computed: {
-      noneRefreshing () {
-        return NONE_REFRESHING
+      refreshingText () {
+        switch (this.pullState) {
+          case REFRESHING:
+            return '正在刷新'
+          case READY_REFRESH:
+            return '松开刷新'
+          default:
+            return '下拉刷新'
+        }
       },
       style () {
         const style = {transform: `translate3d(0, ${this.moveDistance}px, 0)`}
         if (this.moving === false) {
-          style.transition = 'all 500ms'
+          style.transition = 'all 300ms ease-out'
         }
         return style
       },
       contentStyle () {
         return Object.assign({backgroundColor: this.contentBackgroundColor}, this.style)
+      },
+      hasAnimation () {
+        return this.pullState === REFRESHING
       }
     },
     methods: {
@@ -66,10 +79,10 @@
           }
           this.moveDistance = Math.pow(move, 0.8)
           if (this.moveDistance > this.refreshingBoxHeight) {
-            if (this.pullState === REFRESHING) return
+            if (this.pullState === READY_REFRESH) return
             this.pullState = READY_REFRESH
           } else {
-            if (this.pullState === READY_REFRESH) return
+            if (this.pullState === NONE_REFRESHING) return
             this.pullState = NONE_REFRESHING
           }
         }
@@ -132,16 +145,50 @@
 <style lang="less">
   .pull-refresh {
     position: relative;
-    background: #f1f1f1;
 
     .pull-refreshing__wrapper {
       display: flex;
-      margin-top: -150px;
-      height: 150px;
+      margin-top: -35vh;
+      height: 35vh;
       color: #666;
-      align-items: center;
+      background: #f1f1f1;
+      align-items: flex-end;
       justify-content: center;
       will-change: transform;
+
+      .pull-refreshing__content {
+        display: flex;
+        width: 200px;
+        height: 130px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    .refresh-loading-bar {
+      width: 30px;
+      height: 10px;
+      border-radius: 5px;
+      background-color: #999;
+
+      &.animation {
+        animation: loadingJ 1.25s ease-in-out infinite alternate;
+      }
+    }
+  }
+
+  @keyframes loadingJ {
+    0% {
+      transform: translate(-30px, 0);
+    }
+
+    50% {
+      background-color: #f5634a;
+    }
+
+    100% {
+      transform: translate(30px, 0);
     }
   }
 </style>

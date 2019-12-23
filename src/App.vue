@@ -29,10 +29,14 @@
   }
 
   html {
+    width: 100%;
+    height: 100%;
     touch-action: manipulation;
   }
 
   body {
+    width: 100%;
+    height: 100%;
     font-size: 28px;
     color: #333;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
@@ -40,12 +44,10 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  .icon {
-    margin: 0 5px 0 0;
-    height: 34px;
-    width: 34px;
+  #app {
+    width: 100%;
+    height: 100%;
   }
-
 
   .vux-pop-out-enter-active,
   .vux-pop-out-leave-active,

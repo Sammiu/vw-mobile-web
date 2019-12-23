@@ -78,7 +78,7 @@
 
   .main-content {
     position: relative;
-    margin-bottom: 120px;
+    padding-bottom: 100px;
   }
 
   .tab-bar__wrap {
