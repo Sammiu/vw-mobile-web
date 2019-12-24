@@ -79,7 +79,7 @@
         }
         this.recordStartYAxis(this.startY === null, evt)
 
-        const moveY = evt.targetTouches[0].clientY - this.startY
+        const moveY = this.getPageY(evt) - this.startY
         if (moveY > 0) {
           this.moving = true
           evt.preventDefault()
@@ -123,6 +123,10 @@
           elem.removeEventListener('touchend', this.touchEndCallback)
         }
       },
+      getPageY (evt) {
+        const target = evt.touches ? e.touches[0] : evt
+        return target.pageY
+      },
       getScrollTop () {
         return document.documentElement.scrollTop || document.body.scrollTop
       },
@@ -132,7 +136,7 @@
       recordStartYAxis (pass, evt) {
         if (pass) {
           evt.canMove = true
-          this.startY = evt.targetTouches[0].clientY
+          this.startY = this.getPageY(evt)
         }
       }
     },
