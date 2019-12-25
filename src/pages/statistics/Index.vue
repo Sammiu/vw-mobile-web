@@ -1,5 +1,5 @@
 <template>
-  <div ref="container">
+  <div ref="container" class="container">
     <div class="profile-pay-item" @click="handleOpenDatepicker" v-for="i in count">
       <svg class="pay-icon" viewBox="0 0 1024 1024">
         <path
@@ -15,15 +15,21 @@
               p-id="11899" fill="#999999"></path>
       </svg>
     </div>
+    <Picker/>
   </div>
 </template>
 
 <script>
+  import Picker from '@/components/picker/Picker'
+
   export default {
     data () {
       return {
-        count: 50,
+        count: 1,
       }
+    },
+    components: {
+      Picker
     },
     methods: {
       handleOpenDatepicker () {
@@ -31,19 +37,18 @@
       }
     },
     mounted () {
-      const elem = this.$refs.container
-      elem.addEventListener('touchstart', () => console.log('touchstart'))
-      elem.addEventListener('touchmove', () => console.log('touchmove'))
-      elem.addEventListener('touchend', () => console.log('touchend'))
-      elem.addEventListener('scroll', () => console.log('scroll'))
     }
   }
 </script>
 
 <style scoped lang="less">
+
+  .container {
+  }
+
   .profile-pay-item {
     display: flex;
-    margin: 20px 0;
+    padding: 20px 0;
     height: 80px;
     align-items: center;
     border-top: 1px solid #e1e1e1;

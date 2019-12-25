@@ -50,7 +50,7 @@
   export default {
     data () {
       return {
-        viewName: 'home'
+        viewName: 'statistics'
       }
     },
     components: {
@@ -61,13 +61,14 @@
     },
     asyncData () {
       return new Promise((resolve, reject) => {
-        service.checkLogin().then(resolve, err => {
-          console.log(err)
-          reject(err)
-        }).catch(e => {
-          console.log(e)
-          reject(e)
-        })
+        resolve()
+        // service.checkLogin().then(resolve, err => {
+        //   console.log(err)
+        //   reject(err)
+        // }).catch(e => {
+        //   console.log(e)
+        //   reject(e)
+        // })
       })
     }
   }
