@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "server": "cross-env NODE_ENV=production pm2 start server.js",
-    "dev:ssr": "node server.js",
+    "dev:ssr": "node --inspect-brk server.js",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "e2e": "node test/e2e/runner.js",
