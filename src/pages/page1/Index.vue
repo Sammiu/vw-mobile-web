@@ -15,7 +15,7 @@
 
 <script>
   import {mapState} from 'vuex'
-
+   
   export default {
     name: 'page1',
     data () {

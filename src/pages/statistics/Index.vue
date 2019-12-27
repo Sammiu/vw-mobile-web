@@ -15,7 +15,7 @@
               p-id="11899" fill="#999999"></path>
       </svg>
     </div>
-    <Picker/>
+    <Picker ref="picker"/>
   </div>
 </template>
 
@@ -33,7 +33,7 @@
     },
     methods: {
       handleOpenDatepicker () {
-
+        this.$refs.picker.open()
       }
     },
     mounted () {
@@ -42,10 +42,6 @@
 </script>
 
 <style scoped lang="less">
-
-  .container {
-  }
-
   .profile-pay-item {
     display: flex;
     padding: 20px 0;
