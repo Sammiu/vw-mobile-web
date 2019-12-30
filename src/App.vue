@@ -30,13 +30,11 @@
 
   html {
     width: 100%;
-    height: 100%;
     touch-action: manipulation;
   }
 
   body {
     width: 100%;
-    height: 100%;
     font-size: 28px;
     color: #333;
     -webkit-overflow-scrolling: touch;
@@ -47,7 +45,6 @@
 
   #app, .content__wrap {
     width: 100%;
-    height: 100%;
   }
 
   .vux-pop-out-enter-active,
