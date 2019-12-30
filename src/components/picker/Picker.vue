@@ -4,12 +4,12 @@
       <div class="ms-picker-popup__mask" v-show="show"></div>
     </transition>
     <div class="ms-picker-popup__wrapper">
-      <transition name="slide-in-up" @after-leave="visible = false">
+      <transition name="slide-in-up" @after-leave="visible = false" @after-enter="setMaxScrollTop">
         <div class="ms-picker-popup" v-show="show">
           <div class="ms-picker-popup__header">
-            <div class="ms-picker-popup_button" @click="close">取消</div>
+            <div class="ms-picker-popup_button" @click.stop="close">取消</div>
             <div class="ms-picker-popup_title">时间选择器</div>
-            <div class="ms-picker-popup_button">确定</div>
+            <div class="ms-picker-popup_button" @click.stop="close">确定</div>
           </div>
           <div class="ms-picker" ref="container">
             <div class="ms-picker-mask"></div>
@@ -38,18 +38,13 @@ export default {
     location() {
       return this.isAnimating ? "location" : "";
     },
-    popUpWrapperIndex() {
-      return this.show ? 3 : 3;
-    }
   },
   methods: {
     init() {
       const { container, indicator, content } = this.$refs;
+      this.offset = 50;
       this.translateY = 0;
       this.itemHeight = parseFloat(window.getComputedStyle(indicator).height);
-      this.maxScrollTop =
-        parseFloat(window.getComputedStyle(content).height) - this.itemHeight;
-
       content.style.top = `${this.itemHeight * 2}px`;
 
       container.addEventListener(
@@ -71,6 +66,10 @@ export default {
         "transitionend",
         () => (this.isAnimating = false)
       );
+    },
+    setMaxScrollTop(){
+     this.maxScrollTop =
+        parseFloat(window.getComputedStyle(this.$refs.content).height) - this.itemHeight;
     },
     open() {
       this.visible = true;
@@ -106,20 +105,12 @@ export default {
       }
       this.setTransform(translateY);
       this.verticalY = pageY - this.clientY;
-      console.log(this.verticalY);
       this.clientY = pageY;
     },
     touchEndHandler() {
-      this.translateY =
-        this.getPageY(this.preTouchEvt) - this.startTouchTop + this.translateY;
+      this.translateY = this.getPageY(this.preTouchEvt) - this.startTouchTop + this.translateY;
       this.touchLeave();
       this.preTouchEvt = null;
-      // this.locationReset(this.translateY)
-    },
-    ease(translateY) {
-      this.isAnimating = true;
-      this.translateY = translateY;
-      this.setTransform(this.translateY);
     },
     touchLeave() {
       const friction = ((this.verticalY >> 31) * 2 + 1) * 0.5;
@@ -128,22 +119,23 @@ export default {
         this.translateY += this.verticalY;
         this.setTransform(this.translateY);
 
-        if (Math.abs(this.translateY) > this.maxScrollTop) {
+        if (Math.abs(this.translateY) > this.maxScrollTop + this.offset) {
           clearInterval(this.timer);
-          this.ease(-this.maxScrollTop);
+          this.locationReset(-this.maxScrollTop);
           return;
-        } else if (this.translateY > 0) {
+        } else if (this.translateY > this.offset) {
           clearInterval(this.timer);
-          this.ease(0);
+          this.locationReset(0);
           return;
         }
-
         if (Math.abs(this.verticalY) < 1) {
           clearInterval(this.timer);
           if (Math.abs(this.translateY) > this.maxScrollTop) {
-            this.ease(-this.maxScrollTop);
+            this.locationReset(-this.maxScrollTop);
           } else if (this.translateY > 0) {
-            this.ease(0);
+            this.locationReset(0);
+          }else{
+            this.locationReset(this.translateY)
           }
         }
       }, 10);
@@ -154,11 +146,12 @@ export default {
     },
     locationReset(translateY) {
       const currentIndex = Math.abs(Math.round(translateY / this.itemHeight));
+      this.isAnimating = true;
       this.translateY = currentIndex * this.itemHeight * -1;
       this.setTransform(this.translateY);
       this.$emit("onValueChange", {
         key: currentIndex,
-        value: this.data[currentIndex]
+        value: currentIndex
       });
     }
   },
@@ -180,7 +173,7 @@ export default {
 }
 
 .slide-in-up-enter-active {
-  animation: slideInUp ease-in-out 0.3s;
+  animation: slideInUp 0.3s ease-in-out;
 }
 
 .slide-in-up-leave-active {
@@ -193,15 +186,6 @@ export default {
   }
   100% {
     transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes slideOutUp {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  100% {
-    transform: translate3d(0, 100%, 0);
   }
 }
 
@@ -226,6 +210,7 @@ export default {
   left: 0;
   bottom: 0;
   width: 100%;
+  z-index: 1001;
   background-color: #fff;
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -235,7 +220,6 @@ export default {
   display: flex;
   height: 80px;
   border-bottom: 1px solid #ddd;
-  box-shadow: 10px 10px #ccc;
 }
 
 .ms-picker-popup_title {
