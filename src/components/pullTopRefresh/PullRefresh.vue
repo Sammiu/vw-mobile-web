@@ -124,7 +124,7 @@
         }
       },
       getPageY (evt) {
-        const target = evt.touches ? e.touches[0] : evt
+        const target = evt.touches ? evt.touches[0] : evt
         return target.pageY
       },
       getScrollTop () {
