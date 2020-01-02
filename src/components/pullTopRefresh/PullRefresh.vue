@@ -69,15 +69,21 @@
       },
       touchStart (evt) {
         if (this.pullState === NONE_REFRESHING) {
-          this.YDistance !== 0 && (this.YDistance = 0)
-          this.recordStartYAxis(this.getScrollTop() <= 0, evt)
+          if(this.YDistance !== 0){
+            this.YDistance = 0
+          }
+    
+          if(this.getScrollTop() <= 0){
+            this.recordStartYAxis(evt)
+          }
         }
       },
       touchMove (evt) {
-        if (this.pullState === REFRESHING || this.getScrollTop() > 0) {
-          return
+        if (this.pullState === REFRESHING || this.getScrollTop() > 0) return
+
+        if(this.startY === null){
+          this.recordStartYAxis(evt)
         }
-        this.recordStartYAxis(this.startY === null, evt)
 
         const moveY = this.getPageY(evt) - this.startY
         if (moveY > 0) {
@@ -107,20 +113,21 @@
           this.YDistance = 0
         }
       },
-      addPullDownEventListener () {
+      bindTouchEvent (elem) {
         if (this.enable) {
-          const elem = this.$refs.scrollBox
+          this.touchEndCallback = this.touchEnd.bind(this)
           elem.addEventListener('touchstart', this.touchStartCallback = this.touchStart.bind(this))
           elem.addEventListener('touchmove', this.touchMoveCallback = this.touchMove.bind(this))
-          elem.addEventListener('touchend', this.touchEndCallback = this.touchEnd.bind(this))
+          elem.addEventListener('touchend', this.touchEndCallback)
+          elem.addEventListener('touchcancel', this.touchEndCallback)
         }
       },
-      removePullDownEventListener () {
+      unbindTouchEvent (elem) {
         if (this.enable) {
-          const elem = this.$refs.scrollBox
           elem.removeEventListener('touchstart', this.touchStartCallback)
           elem.removeEventListener('touchmove', this.touchMoveCallback)
           elem.removeEventListener('touchend', this.touchEndCallback)
+          elem.removeEventListener('touchcancel', this.touchEndCallback)
         }
       },
       getPageY (evt) {
@@ -133,19 +140,17 @@
       setRefreshingBoxHeight () {
         this.refreshingBoxHeight = this.$refs.refreshingBox.offsetHeight
       },
-      recordStartYAxis (pass, evt) {
-        if (pass) {
-          evt.canMove = true
-          this.startY = this.getPageY(evt)
-        }
+      recordStartYAxis (evt) {
+        evt.canMove = true
+        this.startY = this.getPageY(evt)
       }
     },
     mounted () {
       this.setRefreshingBoxHeight()
-      this.addPullDownEventListener()
+      this.bindTouchEvent(this.$refs.scrollBox)
     },
     beforeDestroy () {
-      this.removePullDownEventListener()
+      this.unbindTouchEvent(this.$refs.scrollBox)
     }
   }
 </script>

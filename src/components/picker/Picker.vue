@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     location() {
-      return this.isAnimating ? "location" : "";
+      return this.isAnimating ? 'location' : undefined;
     },
   },
   methods: {
@@ -46,26 +46,7 @@ export default {
       this.translateY = 0;
       this.itemHeight = parseFloat(window.getComputedStyle(indicator).height);
       content.style.top = `${this.itemHeight * 2}px`;
-
-      container.addEventListener(
-        "touchstart",
-        this.touchStartHandler.bind(this),
-        false
-      );
-      container.addEventListener(
-        "touchmove",
-        this.touchMoveHandler.bind(this),
-        false
-      );
-      container.addEventListener(
-        "touchend",
-        this.touchEndHandler.bind(this),
-        false
-      );
-      content.addEventListener(
-        "transitionend",
-        () => (this.isAnimating = false)
-      );
+      this.bindTouchEvent(container)
     },
     setMaxScrollTop(){
      this.maxScrollTop =
@@ -149,15 +130,36 @@ export default {
       this.isAnimating = true;
       this.translateY = currentIndex * this.itemHeight * -1;
       this.setTransform(this.translateY);
-      this.$emit("onValueChange", {
+      this.$emit('onValueChange', {
         key: currentIndex,
         value: currentIndex
       });
+    },
+    bindTouchEvent(elem){
+      this.touchStartCallback = this.touchStartHandler.bind(this)
+      this.touchMoveCallback = this.touchMoveHandler.bind(this)
+      this.touchEndCallback = this.touchEndHandler.bind(this)
+      this.animationEndCallback = () => (this.isAnimating = false)
+      elem.addEventListener('touchstart', this.touchStartCallback)
+      elem.addEventListener('touchmove', this.touchMoveCallback)
+      elem.addEventListener('touchend', this.touchEndCallback)
+      elem.addEventListener('touchcancel', this.touchEndCallback)
+      elem.addEventListener('transitionend', animationEndCallback);
+    },
+    unbindTouchEvent(elem){
+      elem.removeEventListener('touchstart', this.touchStartCallback)
+      elem.removeEventListener('touchmove', this.touchMoveCallback)
+      elem.removeEventListener('touchend', this.touchEndCallback)
+      elem.removeEventListener('touchcancel', this.touchEndCallback)
+      elem.removeEventListener('transitionend', this.animationEndCallback);
     }
   },
   mounted() {
     this.init();
-  }
+  },
+  beforeDestroy () {
+    this.unbindTouchEvent(this.$refs.container)
+ }
 };
 </script>
 
@@ -173,11 +175,11 @@ export default {
 }
 
 .slide-in-up-enter-active {
-  animation: slideInUp 0.3s ease-in-out;
+  animation: slideInUp 0.3s ease-out;
 }
 
 .slide-in-up-leave-active {
-  animation: slideInUp 0.3s ease-in-out reverse;
+  animation: slideInUp 0.3s ease-out reverse;
 }
 
 @keyframes slideInUp {
