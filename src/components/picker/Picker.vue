@@ -15,7 +15,7 @@
             <div class="ms-picker-mask"></div>
             <div class="ms-picker-indicator" ref="indicator"></div>
             <div class="ms-picker-content" :class="location" ref="content">
-              <div class="ms-picker-item" v-for="i in count">{{ i }}</div>
+              <div class="ms-picker-item" v-for="val in data">{{ val }}</div>
             </div>
           </div>
         </div>
@@ -26,116 +26,132 @@
 
 <script>
 export default {
+  props: {
+    data: Array
+  },
   data() {
     return {
-      count: 20,
       show: false,
       visible: false,
+      selectedIndex: 0,
       isAnimating: false
-    };
+    }
   },
   computed: {
     location() {
-      return this.isAnimating ? 'location' : undefined;
-    },
+      return this.isAnimating ? 'location' : undefined
+    }
   },
   methods: {
     init() {
-      const { container, indicator, content } = this.$refs;
-      this.offset = 50;
-      this.translateY = 0;
-      this.itemHeight = parseFloat(window.getComputedStyle(indicator).height);
-      content.style.top = `${this.itemHeight * 2}px`;
+      const { container, indicator, content } = this.$refs
+      this.offset = 50
+      this.translateY = 0
+      this.itemHeight = parseFloat(window.getComputedStyle(indicator).height)
+      content.style.top = `${this.itemHeight * 2}px`
       this.bindTouchEvent(container)
     },
-    setMaxScrollTop(){
-     this.maxScrollTop =
-        parseFloat(window.getComputedStyle(this.$refs.content).height) - this.itemHeight;
+    setMaxScrollTop() {
+      this.maxScrollTop =
+        parseFloat(window.getComputedStyle(this.$refs.content).height) -
+        this.itemHeight
     },
-    open() {
-      this.visible = true;
-      this.$nextTick(() => setTimeout(() => (this.show = true)));
+    open(options) {
+      this.visible = true
+      this.$nextTick(() => {
+        if (options && options.hasOwnProperty('value')) {
+          const index = this.data.findIndex(val => val === options.value)
+          if (index > -1) {
+            this.selectedIndex = index
+            this.translateY = this.itemHeight * index * -1
+            this.setTransform(this.translateY)
+          }
+        }
+        this.show = true
+      })
     },
     close() {
-      this.show = false;
+      this.show = false
     },
     setTransform(top) {
-      this.$refs.content.style.transform = "translate3d(0, " + top + "px, 0)";
+      this.$refs.content.style.transform = `translate3d(0, ${top}px, 0)`
     },
     touchStartHandler(evt) {
-      evt.preventDefault();
-      if (this.isAnimating) return;
-      clearInterval(this.timer);
-      this.verticalY = 0;
-      this.preTouchEvt = evt;
-      this.startTouchTop = this.getPageY(evt);
-      this.clientY = this.startTouchTop;
+      evt.preventDefault()
+      if (this.isAnimating) return
+      clearInterval(this.timer)
+      this.verticalY = 0
+      this.preTouchEvt = evt
+      this.startTouchTop = this.getPageY(evt)
+      this.clientY = this.startTouchTop
     },
     touchMoveHandler(evt) {
-      const pageY = this.getPageY(evt);
-      const moveY = pageY - this.startTouchTop;
-      this.preTouchEvt = evt;
+      const pageY = this.getPageY(evt)
+      const moveY = pageY - this.startTouchTop
+      this.preTouchEvt = evt
 
-      let translateY = moveY + this.translateY;
+      let translateY = moveY + this.translateY
       if (Math.abs(translateY) > this.maxScrollTop || translateY > 0) {
         if (moveY < 0) {
-          translateY = Math.pow(Math.abs(moveY), 0.8) * -1 + this.translateY;
+          translateY = Math.pow(Math.abs(moveY), 0.8) * -1 + this.translateY
         } else {
-          translateY = Math.pow(moveY, 0.8) + this.translateY;
+          translateY = Math.pow(moveY, 0.8) + this.translateY
         }
       }
-      this.setTransform(translateY);
-      this.verticalY = pageY - this.clientY;
-      this.clientY = pageY;
+      this.setTransform(translateY)
+      this.verticalY = pageY - this.clientY
+      this.clientY = pageY
     },
     touchEndHandler() {
-      this.translateY = this.getPageY(this.preTouchEvt) - this.startTouchTop + this.translateY;
-      this.touchLeave();
-      this.preTouchEvt = null;
+      const { preTouchEvt, startTouchTop, translateY } = this
+      this.translateY = this.getPageY(preTouchEvt) - startTouchTop + translateY
+      this.touchLeave()
+      this.preTouchEvt = null
     },
     touchLeave() {
-      const friction = ((this.verticalY >> 31) * 2 + 1) * 0.5;
+      const friction = this.verticalY > 0 ? 0.5 : -0.5
       this.timer = setInterval(() => {
-        this.verticalY -= friction;
-        this.translateY += this.verticalY;
-        this.setTransform(this.translateY);
+        this.verticalY -= friction
+        this.translateY += this.verticalY
+        this.setTransform(this.translateY)
 
         if (Math.abs(this.translateY) > this.maxScrollTop + this.offset) {
-          clearInterval(this.timer);
-          this.locationReset(-this.maxScrollTop);
-          return;
+          clearInterval(this.timer)
+          this.locationReset(-this.maxScrollTop)
+          return
         } else if (this.translateY > this.offset) {
-          clearInterval(this.timer);
-          this.locationReset(0);
-          return;
+          clearInterval(this.timer)
+          this.locationReset(0)
+          return
         }
         if (Math.abs(this.verticalY) < 1) {
-          clearInterval(this.timer);
+          clearInterval(this.timer)
           if (Math.abs(this.translateY) > this.maxScrollTop) {
-            this.locationReset(-this.maxScrollTop);
+            this.locationReset(-this.maxScrollTop)
           } else if (this.translateY > 0) {
-            this.locationReset(0);
-          }else{
+            this.locationReset(0)
+          } else {
             this.locationReset(this.translateY)
           }
         }
-      }, 10);
+      }, 10)
     },
     getPageY(evt) {
-      const target = evt.touches ? evt.touches[0] : evt;
-      return target.pageY;
+      const target = evt.touches ? evt.touches[0] : evt
+      return target.pageY
     },
     locationReset(translateY) {
-      const currentIndex = Math.abs(Math.round(translateY / this.itemHeight));
-      this.isAnimating = true;
-      this.translateY = currentIndex * this.itemHeight * -1;
-      this.setTransform(this.translateY);
+      const currentIndex = Math.abs(Math.round(translateY / this.itemHeight))
+      this.isAnimating = true
+      this.selectedIndex = currentIndex
+      this.translateY = currentIndex * this.itemHeight * -1
+      this.setTransform(this.translateY)
       this.$emit('onValueChange', {
         key: currentIndex,
-        value: currentIndex
-      });
+        value: this.data[currentIndex]
+      })
     },
-    bindTouchEvent(elem){
+    bindTouchEvent(elem) {
       this.touchStartCallback = this.touchStartHandler.bind(this)
       this.touchMoveCallback = this.touchMoveHandler.bind(this)
       this.touchEndCallback = this.touchEndHandler.bind(this)
@@ -144,23 +160,23 @@ export default {
       elem.addEventListener('touchmove', this.touchMoveCallback)
       elem.addEventListener('touchend', this.touchEndCallback)
       elem.addEventListener('touchcancel', this.touchEndCallback)
-      elem.addEventListener('transitionend', animationEndCallback);
+      elem.addEventListener('transitionend', this.animationEndCallback)
     },
-    unbindTouchEvent(elem){
+    unbindTouchEvent(elem) {
       elem.removeEventListener('touchstart', this.touchStartCallback)
       elem.removeEventListener('touchmove', this.touchMoveCallback)
       elem.removeEventListener('touchend', this.touchEndCallback)
       elem.removeEventListener('touchcancel', this.touchEndCallback)
-      elem.removeEventListener('transitionend', this.animationEndCallback);
+      elem.removeEventListener('transitionend', this.animationEndCallback)
     }
   },
   mounted() {
-    this.init();
+    this.init()
   },
-  beforeDestroy () {
+  beforeDestroy() {
     this.unbindTouchEvent(this.$refs.container)
- }
-};
+  }
+}
 </script>
 
 <style scoped lang="less">
