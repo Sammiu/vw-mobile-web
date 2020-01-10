@@ -49,7 +49,6 @@ export default {
       this.translateY = 0
       this.itemHeight = parseFloat(window.getComputedStyle(indicator).height)
       content.style.top = `${this.itemHeight * 2}px`
-      this.bindTouchEvent(container)
     },
     setMaxScrollTop() {
       this.maxScrollTop =
@@ -152,26 +151,24 @@ export default {
       })
     },
     bindTouchEvent(elem) {
-      this.touchStartCallback = this.touchStartHandler.bind(this)
-      this.touchMoveCallback = this.touchMoveHandler.bind(this)
-      this.touchEndCallback = this.touchEndHandler.bind(this)
       this.animationEndCallback = () => (this.isAnimating = false)
-      elem.addEventListener('touchstart', this.touchStartCallback)
-      elem.addEventListener('touchmove', this.touchMoveCallback)
-      elem.addEventListener('touchend', this.touchEndCallback)
+      elem.addEventListener('touchstart', this.touchStartHandler)
+      elem.addEventListener('touchmove', this.touchMoveHandler)
+      elem.addEventListener('touchend', this.touchEndHandler)
       elem.addEventListener('touchcancel', this.touchEndCallback)
       elem.addEventListener('transitionend', this.animationEndCallback)
     },
     unbindTouchEvent(elem) {
-      elem.removeEventListener('touchstart', this.touchStartCallback)
-      elem.removeEventListener('touchmove', this.touchMoveCallback)
-      elem.removeEventListener('touchend', this.touchEndCallback)
-      elem.removeEventListener('touchcancel', this.touchEndCallback)
+      elem.removeEventListener('touchstart', this.touchStartHandler)
+      elem.removeEventListener('touchmove', this.touchMoveHandler)
+      elem.removeEventListener('touchend', this.touchEndHandler)
+      elem.removeEventListener('touchcancel', this.touchEndHandler)
       elem.removeEventListener('transitionend', this.animationEndCallback)
     }
   },
   mounted() {
     this.init()
+    this.bindTouchEvent(this.$refs.container)
   },
   beforeDestroy() {
     this.unbindTouchEvent(this.$refs.container)
