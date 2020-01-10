@@ -1,6 +1,6 @@
 <template>
   <div ref="container" class="container">
-    <div class="profile-pay-item" @click="handleOpenDatepicker" v-for="i in count">
+    <Button class="profile-pay-item" :activeStyle="itemActiveStyle" @onClick="handleOpenDatepicker">
       <svg class="pay-icon" viewBox="0 0 1024 1024">
         <path
           d="M861.448 233.721H732.883V97.55c0-15.378-12.443-27.822-27.821-27.822S677.24 82.17 677.24 97.55V233.72H348.604V94.751c0-15.377-12.443-27.822-27.822-27.822s-27.821 12.444-27.821 27.822v138.97H162.55c-52.763 0-95.69 42.927-95.69 95.69v531.97c0 52.763 42.927 95.69 95.69 95.69h698.897c52.763 0 95.69-42.927 95.69-95.69v-531.97c0-52.763-42.927-95.69-95.69-95.69z m40.047 627.66c0 22.088-17.959 40.047-40.047 40.047H162.551c-22.088 0-40.047-17.959-40.047-40.047v-531.97c0-22.09 17.959-40.049 40.047-40.049h698.897c22.088 0 40.047 17.96 40.047 40.048v531.971z"
@@ -22,12 +22,13 @@
           fill="#999999"
         />
       </svg>
-    </div>
+    </Button>
     <Picker ref="picker" :data="pickerItems" @onValueChange="onPickerValueChange" />
   </div>
 </template>
 
 <script>
+import Button from '@/components/button/Button'
 import Picker from '@/components/picker/Picker'
 
 export default {
@@ -35,14 +36,17 @@ export default {
     return {
       count: 1,
       pickerItems: null,
-      defaultPickerVal: 5
+      defaultPickerVal: 5,
+      itemActiveStyle: { 'background-color': '#f1f1f1' }
     }
   },
   components: {
+    Button,
     Picker
   },
   methods: {
     handleOpenDatepicker() {
+      alert('ok')
       this.$refs.picker.open({ value: this.defaultPickerVal })
     },
     onPickerValueChange(item) {
