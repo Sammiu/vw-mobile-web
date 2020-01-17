@@ -28,37 +28,36 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {}
-    }
+export default {
+  data() {
+    return {}
   }
+}
 </script>
 
 <style scoped lang="less">
-  .pro-list__wrapper {
+.pro-list__wrapper {
+  background-color: #fff;
+  
+  .pro-list_row {
+    display: flex;
+    padding-top: 30px;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  & .pro-list__item {
     position: relative;
-    width: 100vmin;
+    display: flex;
+    width: 280px;
+    height: 200px;
+    border: 1px solid #ddd;
+    align-items: center;
+    justify-content: center;
 
-    .pro-list_row {
-      display: flex;
-      padding-top: 30px;
-      align-items: center;
-      justify-content: space-around;
-    }
-
-    & .pro-list__item {
-      position: relative;
-      display: flex;
-      width: 280px;
-      height: 200px;
-      border: 1px solid #ddd;
-      align-items: center;
-      justify-content: center;
-
-      & .pro-list__item-name {
-        color: #666;
-      }
+    & .pro-list__item-name {
+      color: #666;
     }
   }
+}
 </style>

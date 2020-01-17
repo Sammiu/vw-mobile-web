@@ -23,28 +23,34 @@ axios.defaults.proxy = (function () {
 let cookie = null
 
 export function setCookies(Cookies) {
+  console.log(cookie + 'haha')
   cookie = Cookies
 }
 
 function getCookie(cname, cookie) {
-  const name = cname + '=';
-  const ca = cookie.split(';');
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
+  if (cookie) {
+    const name = cname + '='
+    const ca = cookie.split(';')
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i]
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1)
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length)
+      }
     }
   }
-  return '';
+  return ''
 }
 
 axios.interceptors.request.use(config => {
-  if (process.env.VUE_ENV === 'server' && cookie) {
-    config.headers.cookie = cookie;
-    config.headers.authorization = getCookie('token', cookie);
+  if (process.env.VUE_ENV === 'server') {
+    config.headers.cookie = cookie || ''
+    config.headers.authorization = getCookie('token', cookie)
   }
+
+  // console.log(config.headers)
+
   return config
 }, error => Promise.reject(error))

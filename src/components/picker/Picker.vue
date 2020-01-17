@@ -9,7 +9,7 @@
           <div class="ms-picker-popup__header">
             <div class="ms-picker-popup_button" @click.stop="close">取消</div>
             <div class="ms-picker-popup_title">时间选择器</div>
-            <div class="ms-picker-popup_button" @click.stop="close">确定</div>
+            <div class="ms-picker-popup_button" @click.stop="onOkHandle">确定</div>
           </div>
           <div class="ms-picker" ref="container">
             <div class="ms-picker-mask"></div>
@@ -70,6 +70,15 @@ export default {
       })
     },
     close() {
+      this.show = false
+    },
+    onOkHandle() {
+      if (this.data) {
+        this.$emit('onOk', {
+          key: this.selectedIndex,
+          value: this.data[this.selectedIndex]
+        })
+      }
       this.show = false
     },
     setTransform(top) {

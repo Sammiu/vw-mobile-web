@@ -1,5 +1,5 @@
-import {get} from './baseService'
+import { get } from './baseService'
 
-export function getAccountAll () {
+export const getAccountAll = () => {
   return get('/api/mobile/getAccountAll')
 }

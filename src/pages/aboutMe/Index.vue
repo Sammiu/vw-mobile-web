@@ -1,5 +1,5 @@
 <template>
-  <div class="ms-profile-container">
+  <div>
     <div class="ms-profile__wrapper">
       <div class="profile-header-item left">
         <div class="avatar"></div>
@@ -51,15 +51,6 @@ export default {
 
 <style scoped lang="less">
 @import '../../styles/common.less';
-
-.ms-profile-container {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background-color: #eee;
-}
 
 .ms-profile__wrapper {
   display: flex;

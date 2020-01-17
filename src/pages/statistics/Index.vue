@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" class="container">
+  <div class="container">
     <Button class="profile-pay-item" :activeStyle="itemActiveStyle" @onClick="handleOpenDatepicker">
       <svg class="pay-icon" viewBox="0 0 1024 1024">
         <path
@@ -23,7 +23,7 @@
         />
       </svg>
     </Button>
-    <Picker ref="picker" :data="pickerItems" @onValueChange="onPickerValueChange" />
+    <Picker ref="picker" :data="pickerItems" @onOk="onValueChanged" />
   </div>
 </template>
 
@@ -46,10 +46,9 @@ export default {
   },
   methods: {
     handleOpenDatepicker() {
-      alert('ok')
       this.$refs.picker.open({ value: this.defaultPickerVal })
     },
-    onPickerValueChange(item) {
+    onValueChanged(item) {
       this.defaultPickerVal = item.value
     }
   },
@@ -64,6 +63,10 @@ export default {
 </script>
 
 <style scoped lang="less">
+.container {
+  background-color: #fff;
+}
+
 .profile-pay-item {
   display: flex;
   padding: 20px 0;

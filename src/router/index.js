@@ -12,29 +12,32 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history',
   routes: [
-    { path: '/', name: 'main', component: Main },
-    { path: '/login', name: 'login', meta: { requireAuth: true }, component: Login },
-    { path: '/pay', name: 'Pay', meta: { requireAuth: true }, component: Pay }
-  ]
+    { path: '/', name: 'main', meta: { background: '#fff' }, component: Main },
+    { path: '/login', name: 'login', meta: { background: '#fff' }, component: Login },
+    { path: '/pay', name: 'pay', meta: { background: '#fff' }, component: Pay }
+  ],
+  scrollBehavior: (to, from, savedPosition) => {
+    return { x: 0, y: 0 }
+  }
 })
 
 let pageStack = null
 
 if (process.env.VUE_ENV === 'client') {
   pageStack = {
-    '/': [
-      { form: '/login', direction: 'forward' },
-      { form: '/pay', direction: 'reverse' }
+    'main': [
+      { form: 'login', direction: 'forward' },
+      { form: 'pay', direction: 'reverse' }
     ],
-    '/pay': [
-      { form: '/', direction: 'forward' }
+    'pay': [
+      { form: 'main', direction: 'forward' }
     ]
   }
 }
 
 router.beforeEach(function (to, from, next) {
-  if (pageStack && pageStack.hasOwnProperty(to.path)) {
-    const item = pageStack[to.path].find(o => o.form === from.path)
+  if (pageStack && pageStack.hasOwnProperty(to.name)) {
+    const item = pageStack[to.name].find(o => o.form === from.name)
     if (item) {
       store.commit(UPDATE_DIRECTION, { direction: item.direction || '' })
     } else {
@@ -49,6 +52,9 @@ router.beforeEach(function (to, from, next) {
   } else {
     next()
   }
+})
+
+router.afterEach(function (to, from, next) {
 })
 
 export default router

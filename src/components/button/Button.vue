@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="{activeClassName: active}"
+    :class="[active && activeClassName]"
     :style="[active && activeStyle]"
     :disabled="disabled"
     @click="onClick"
