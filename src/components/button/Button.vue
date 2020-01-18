@@ -1,9 +1,10 @@
 <template>
   <div
+    class="button"
     :class="[active && activeClassName]"
     :style="[active && activeStyle]"
     :disabled="disabled"
-    @click="onClick"
+    @click.top="onClick"
   >
     <slot />
   </div>
@@ -69,3 +70,8 @@ export default {
   }
 }
 </script>
+<style lang="less">
+.button {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+</style>
