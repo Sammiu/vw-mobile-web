@@ -37,8 +37,9 @@ export default {
 
 <style scoped lang="less">
 .pro-list__wrapper {
+  height: calc(100% - 100px);
   background-color: #fff;
-  
+
   .pro-list_row {
     display: flex;
     padding-top: 30px;

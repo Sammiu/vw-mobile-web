@@ -3,7 +3,7 @@
     <transition
       :name="'vux-pop-' + (direction === 'forward' ? 'in' : 'out')"
       @after-enter="onRouteAfterEnter"
-      @before-enter="onRouteBoforeEnter"
+      @before-leave="onRouteBeforeLeave"
     >
       <keep-alive :include="['homepage', 'notFound']">
         <router-view ref="routerView" class="content__wrap"></router-view>
@@ -23,13 +23,13 @@ export default {
   },
   methods: {
     onRouteAfterEnter() {
-      if (this.$refs.routerView.restoreSavedPosition) {
-        this.$refs.routerView.restoreSavedPosition()
+      if (this.$refs.routerView.onRouteAfterEnter) {
+        this.$refs.routerView.onRouteAfterEnter()
       }
     },
-    onRouteBoforeEnter() {
-      if (this.$refs.routerView.savePosition) {
-        this.$refs.routerView.savePosition()
+    onRouteBeforeLeave() {
+      if (this.$refs.routerView.onRouteBeforeLeave) {
+        this.$refs.routerView.onRouteBeforeLeave()
       }
     }
   }
@@ -46,11 +46,13 @@ export default {
 
 html {
   width: 100%;
+  height: 100%;
   touch-action: manipulation;
 }
 
 body {
   width: 100%;
+  height: 100%;
   font-size: 28px;
   color: #333;
   background-color: #f2f2f2;
@@ -65,6 +67,7 @@ body {
 #app,
 .content__wrap {
   width: 100%;
+  height: 100%;
 }
 
 .vux-pop-out-enter-active,

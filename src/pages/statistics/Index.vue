@@ -64,6 +64,7 @@ export default {
 
 <style scoped lang="less">
 .container {
+  height: calc(100% - 100px);
   background-color: #fff;
 }
 

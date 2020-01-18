@@ -24,8 +24,8 @@ import Button from '@/components/button/Button'
 export default {
   data() {
     return {
-      accNumber: null,
-      password: null
+      accNumber: 'admin',
+      password: 'tt123456'
     }
   },
   computed: {
@@ -152,7 +152,6 @@ export default {
     justify-content: center;
     align-items: center;
     user-select: none;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
     &[disabled] {
       border: 1px solid #ccc;

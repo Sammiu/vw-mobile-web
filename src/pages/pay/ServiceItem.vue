@@ -36,6 +36,7 @@ export default {
   justify-content: center;
   flex-direction: column;
   user-select: none;
+  outline: none;
 
   & .service-item_label {
     padding-top: 10px;

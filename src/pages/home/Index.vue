@@ -148,6 +148,7 @@ export default {
     height: 80px;
     align-items: center;
     border-bottom: 1px solid #ccc;
+    -webkit-tap-highlight-color: transparent;
 
     &:last-child {
       border-bottom-color: transparent;
