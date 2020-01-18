@@ -20,14 +20,7 @@ axios.defaults.proxy = (function () {
   }
 })()
 
-let cookie = null
-
-export function setCookies(Cookies) {
-  console.log(cookie + 'haha')
-  cookie = Cookies
-}
-
-function getCookie(cname, cookie) {
+export const getCookie = (cname, cookie) => {
   if (cookie) {
     const name = cname + '='
     const ca = cookie.split(';')
@@ -43,14 +36,3 @@ function getCookie(cname, cookie) {
   }
   return ''
 }
-
-axios.interceptors.request.use(config => {
-  if (process.env.VUE_ENV === 'server') {
-    config.headers.cookie = cookie || ''
-    config.headers.authorization = getCookie('token', cookie)
-  }
-
-  // console.log(config.headers)
-
-  return config
-}, error => Promise.reject(error))

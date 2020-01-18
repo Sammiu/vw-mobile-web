@@ -1,10 +1,10 @@
-import {post, get} from './baseService'
+import { post, get } from './baseService'
 
 export default {
-  login (params) {
+  login: (params) => {
     return post('/api/mobile/public/login', params)
   },
-  checkLogin () {
-    return get('/api/mobile/checkLogin')
+  checkLogin: (authorization) => {
+    return get('/api/mobile/checkLogin', undefined, { authorization })
   }
 }

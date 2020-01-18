@@ -1,31 +1,29 @@
 /* eslint no-trailing-spaces: ["error", { "skipBlankLines": true }]*/
 
-import {createApp} from '@/main'
-import {setCookies} from '@/api/api-server'
+import { createApp } from '@/main'
+import { getCookie } from '@/api/api-server'
 
 export default function (context) {
   return new Promise((resolve, reject) => {
-    const {app, router, store} = createApp()
-    
+    const { app, router, store } = createApp()
+
     router.push(context.url)
-    
+
     router.onReady(() => {
       const matchedComponents = router.getMatchedComponents()
-      
+
       /** 匹配不到的路由，执行 reject 函数，并返回 404 */
       if (!matchedComponents.length) {
         // eslint-disable-next-line
-        return reject({code: 404})
+        return reject({ code: 404 })
       }
-      
-      /** SSR期间同步cookies */
-      setCookies(context.cookies)
-      
+
       Promise.all(matchedComponents.map(Component => {
         if (Component.asyncData) {
           return Component.asyncData({
             store,
-            route: router.currentRoute
+            route: router.currentRoute,
+            authorization: getCookie('token', context.cookies)
           })
         }
       })).then(() => {
@@ -35,7 +33,7 @@ export default function (context) {
         // 并且 `template` 选项用于 renderer 时，
         // 状态将自动序列化为 `window.__INITIAL_STATE__`，并注入 HTML。
         context.state = store.state
-        
+
         resolve(app)
       }).catch(reject)
     }, reject)

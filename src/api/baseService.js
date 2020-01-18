@@ -8,8 +8,10 @@ import axios from 'axios'
  *
  * @return {Object} Http 自定义头部信息
  **/
-const getHeaders = () => {
-  return {}
+const getHeaders = (authorization) => {
+  return {
+    authorization: authorization || ''
+  }
 }
 
 /**
@@ -61,8 +63,8 @@ const processRequest = (httpRequest, handleError) => {
  * @param {Object} params 需要提交的参数
  * @param {boolean} handleError 是否自己处理异常
  **/
-export const get = (url, params = undefined, handleError = false) => {
-  return processRequest(axios.get(url, { params: params, headers: getHeaders() }), handleError)
+export const get = (url, params = undefined, options = {}, handleError = false) => {
+  return processRequest(axios.get(url, { params: params, headers: getHeaders(options.authorization) }), handleError)
 }
 
 /**
@@ -71,8 +73,8 @@ export const get = (url, params = undefined, handleError = false) => {
  * @param {Object} params 需要提交的参数
  * @param {boolean} handleError 是否自己处理异常
  **/
-export const post = (url, params, handleError = false) => {
-  const option = { url: url, method: 'post', data: params, headers: getHeaders() }
+export const post = (url, params = undefined, options = {}, handleError = false) => {
+  const option = { url: url, method: 'post', data: params, headers: getHeaders(options.authorization) }
   return processRequest(axios(option), handleError)
 }
 
@@ -83,10 +85,10 @@ export const post = (url, params, handleError = false) => {
  * @param {Object} params 需要提交的参数
  * @param {boolean} handleError 是否自己处理异常
  **/
-export const postWithForm = (url, params, handleError = false) => {
+export const postWithForm = (url, params = undefined, options = {}, handleError = false) => {
   const headers = Object.assign({
     'Content-Type': 'application/x-www-form-urlencoded'
-  }, getHeaders())
+  }, getHeaders(options.authorization))
   const option = { url: url, method: 'post', data: Qs.stringify(params), headers: headers }
   return processRequest(axios(option), handleError)
 }
