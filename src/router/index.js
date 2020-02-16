@@ -9,6 +9,11 @@ const Pay = () => import('@/pages/pay/Index')
 
 Vue.use(Router)
 
+export const scrollPosition = {
+  main: { x: 0, y: 0 }
+}
+const getScrollTop = () => document.documentElement.scrollTop || document.body.scrollTop
+
 const router = new Router({
   mode: 'history',
   routes: [
@@ -16,7 +21,10 @@ const router = new Router({
     { path: '/login', name: 'login', meta: { background: '#fff' }, component: Login },
     { path: '/pay', name: 'pay', meta: { background: '#fff' }, component: Pay }
   ],
-  scrollBehavior: (to, from, savedPosition) => {
+  scrollBehavior: function (to, from, savedPosition) {
+    if (scrollPosition.hasOwnProperty(from.name)) {
+      scrollPosition[from.name].y = getScrollTop()
+    }
     return { x: 0, y: 0 }
   }
 })

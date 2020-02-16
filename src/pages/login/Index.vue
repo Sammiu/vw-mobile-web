@@ -5,10 +5,10 @@
     </div>
     <div class="login-form__wrap">
       <div class="login-form__item">
-        <input class="login-form_input" type="text" v-model="accNumber" placeholder="请输入账号" />
+        <input class="login-form_input" type="text" maxlength="25" v-model="accNumber" placeholder="请输入账号" />
       </div>
       <div class="login-form__item">
-        <input class="login-form_input" type="password" v-model="password" placeholder="请输入密码" />
+        <input class="login-form_input" type="password" maxlength="20" v-model="password" placeholder="请输入密码" />
       </div>
       <div class="login-form__item">
         <Button class="login-button" activeClassName="login-button-active" @onClick="loginHandle" :disabled="btnDisable">登 录</button>

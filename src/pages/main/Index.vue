@@ -68,6 +68,8 @@ import Home from '../home/Index'
 import Project from '../project/Index'
 import Statistics from '../statistics/Index'
 import AboutMe from '../aboutMe/Index'
+import { isSafari } from '@/utils/detectUtil'
+import { scrollPosition } from '@/router'
 
 export default {
   name: 'homepage',
@@ -92,15 +94,26 @@ export default {
     aboutMe: AboutMe
   },
   asyncData(options) {
-    return service.checkLogin(options.authorization)
+    if (process.env.VUE_ENV === 'server') {
+      return service.checkLogin(options.authorization)
+    }
+    return Promise.resolve()
   },
   methods: {
     onRouteAfterEnter() {
-      this.opacity = 1
+      if (isSafari()) {
+        this.opacity = 1
+      }
+
+      window.requestAnimationFrame(() =>
+        window.scrollTo(0, scrollPosition.main.y)
+      )
     }
   },
   deactivated() {
-    this.opacity = 0
+    if (isSafari()) {
+      this.opacity = 0
+    }
   }
 }
 </script>

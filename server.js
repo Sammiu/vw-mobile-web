@@ -54,9 +54,22 @@ function renderToString (context) {
 
 app.use(favicon(path.join(__dirname, 'favicon.ico')))
 
+const proxy = require('koa-server-http-proxy')
+const proxyTable = require('./config').dev.proxyTable
+Object.keys(proxyTable).forEach((context) => {
+  const options = proxyTable[context]
+  app.use(proxy(context, options))
+})
+
 
 app.use(async (ctx, next) => {
   try {
+    for (let proxyUrl in proxyTable) {
+      if (ctx.url.startsWith(proxyUrl)) {
+        return next()
+      }
+    }
+
     const context = {title: '约跑', url: ctx.url, cookies: ctx.cookies.request.headers.cookie}
     /** 将服务器端渲染好的html返回给客户端 */
     ctx.body = await renderToString(context)

@@ -3,7 +3,6 @@
     <transition
       :name="'vux-pop-' + (direction === 'forward' ? 'in' : 'out')"
       @after-enter="onRouteAfterEnter"
-      @before-leave="onRouteBeforeLeave"
     >
       <keep-alive :include="['homepage', 'notFound']">
         <router-view ref="routerView" class="content__wrap"></router-view>
@@ -23,14 +22,8 @@ export default {
   },
   methods: {
     onRouteAfterEnter() {
-      if (this.$refs.routerView.onRouteAfterEnter) {
-        this.$refs.routerView.onRouteAfterEnter()
-      }
-    },
-    onRouteBeforeLeave() {
-      if (this.$refs.routerView.onRouteBeforeLeave) {
-        this.$refs.routerView.onRouteBeforeLeave()
-      }
+      const { onRouteAfterEnter } = this.$refs.routerView
+      onRouteAfterEnter && onRouteAfterEnter()
     }
   }
 }
