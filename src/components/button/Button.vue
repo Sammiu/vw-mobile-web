@@ -12,14 +12,23 @@
   </div>
 </template>
 <script>
+  import {isFunction} from '@utils'
+
   export default {
+    name: 'Button',
     props: {
+      touchstart: {type: Function},
+      touchmove: {type: Function},
+      touchend: {type: Function},
+      enableLongTap: {type: Boolean, default: false},
       longPressTime: {type: Number, default: 2000},
-      disabled: {default: false, type: Boolean},
-      activeClassName: {default: '', type: String},
+      disabled: {type: Boolean, default: false},
+      activeClassName: {type: String, default: ''},
       activeStyle: {type: [Object, String, Array]},
-      stopBubble: {type: Boolean, default: false},
-      enablePreventDefault: {type: Boolean, default: false}
+      /** 阻止事件冒泡 */
+      stop: {type: Boolean, default: false},
+      /** 阻止浏览器默认行为 */
+      prevent: {type: Boolean, default: false}
     },
     data () {
       return {
@@ -37,25 +46,42 @@
       this.vueTouches = {}
     },
     methods: {
-      stopPropagation (evt) {
-        if (this.stopBubble) {
-          evt.stopPropagation()
-        }
-      },
       preventDefault (evt) {
-        if (this.enablePreventDefault) {
+        if (this.prevent) {
           evt.preventDefault()
         }
       },
-      triggerEvent (type, isActive, evt) {
-        const eventType = `on${type}`
-        this.$emit(eventType, evt)
+      stopPropagation (evt) {
+        if (this.stop) {
+          evt.stopPropagation()
+        }
+      },
+      triggerEvent (eventType, isActive, evt) {
+        if (eventType === 'onClick') {
+          this.$emit(eventType, evt)
+        } else if (isFunction(this[eventType])) {
+          this[eventType](evt)
+        }
         if (isActive !== this.active && !this.disabled) {
           this.active = isActive
         }
       },
       onClick (evt) {
-        this.triggerEvent('Click', this.active, evt)
+        if (!this.disabled) {
+          this.triggerEvent('onClick', this.active, evt)
+        }
+      },
+      bindLongTapEvent (evt) {
+        if (this.enableLongTap && !this.disabled) {
+          this.time = setTimeout(() => {
+            if (!this.vueLeave && !this.vueMoves) {
+              this.longTouch = true
+              this.active = false
+              this.time = null
+              this.$emit('onLongPress')
+            }
+          }, this.longPressTime)
+        }
       },
       onTouchStart (evt) {
         this.preventDefault(evt)
@@ -65,30 +91,25 @@
         this.longTouch = false
         this.vueTouches.x = evt.changedTouches[0].pageX
         this.vueTouches.y = evt.changedTouches[0].pageY
-        this.time = setTimeout(() => {
-          if (!this.vueLeave && !this.vueMoves) {
-            this.longTouch = true
-            this.triggerEvent('LongPress', this.active, evt)
-          }
-        }, this.longPressTime)
-        this.triggerEvent('TouchStart', true, evt)
+        this.bindLongTapEvent()
+        this.triggerEvent('touchstart', true, evt)
       },
       onTouchMove (evt) {
         this.preventDefault(evt)
         this.stopPropagation(evt)
         if (evt.changedTouches[0].pageX === this.vueTouches.x && evt.changedTouches[0].pageY === this.vueTouches.y) {
-          this.triggerEvent('TouchMove', true, evt)
+          this.triggerEvent('touchmove', true, evt)
         } else {
           this.vueMoves = true
-          this.triggerEvent('TouchMove', false, evt)
+          this.triggerEvent('touchmove', false, evt)
         }
       },
       onTouchEnd (evt) {
         this.preventDefault(evt)
         this.stopPropagation(evt)
         this.vueLeave = true
-        clearTimeout(this.time)
-        this.triggerEvent('TouchEnd', false, evt)
+        this.time && clearTimeout(this.time)
+        this.triggerEvent('touchend', false, evt)
         if (!this.vueMoves && !this.longTouch) {
           this.onClick(evt)
         }
