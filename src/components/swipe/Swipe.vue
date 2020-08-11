@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div @touchstart.passive="onTouchStart"
+       @touchmove.passive="onTouchMove"
+       @touchend.passive="onTouchEnd"
+       @touchcancel.passive="onTouchEnd">
     <slot/>
   </div>
 </template>
@@ -9,26 +12,20 @@
     props: {
       rightDisX: {type: Number, default: 10},
       enableSwipe: {type: Boolean, default: true},
-      stopBubble: {type: Boolean, default: false},
-      enablePreventDefault: {type: Boolean, default: false}
-    },
-    data () {
-      return {}
+      /** 阻止事件冒泡 */
+      stop: {type: Boolean, default: false}
     },
     methods: {
       stopPropagation (evt) {
-        if (this.stopBubble) {
+        if (this.stop) {
           evt.stopPropagation()
         }
       },
-      preventDefault (evt) {
-        if (this.enablePreventDefault) {
-          evt.preventDefault()
-        }
-      },
       onTouchStart (e) {
+        if (!this.enableSwipe) {
+          return
+        }
         this.stopPropagation(e)
-        this.preventDefault(e)
         this.vueMoves = true
         this.vueLeave = true
         this.vueTouches.x = e.changedTouches[0].pageX
@@ -36,13 +33,17 @@
       },
       onTouchMove (e) {
         this.stopPropagation(e)
-        this.preventDefault(e)
-        this.vueMoves = false
+        if (!this.enableSwipe) {
+          return
+        }
+        this.vueMoves = e.changedTouches[0].pageX === this.vueTouches.x && e.changedTouches[0].pageY === this.vueTouches.y
         this.$emit('touchmove', e)
       },
       onTouchEnd (e) {
         this.stopPropagation(e)
-        this.preventDefault(e)
+        if (!this.enableSwipe) {
+          return
+        }
         const disX = e.changedTouches[0].pageX - this.vueTouches.x
         const disY = e.changedTouches[0].pageY - this.vueTouches.y
         if (Math.abs(disX) > 10 || Math.abs(disY) > 100) {
@@ -66,30 +67,12 @@
             this.$emit('click', e)
           }
         }
-      },
-      bindEvent () {
-        this.$el.addEventListener('touchstart', this.onTouchStart)
-        this.$el.addEventListener('touchmove', this.onTouchMove)
-        this.$el.addEventListener('touchend', this.onTouchEnd)
-        this.$el.addEventListener('touchcancel', this.onTouchEnd)
-      },
-      unbindEvent () {
-        this.$el.removeEventListener('touchstart', this.onTouchStart)
-        this.$el.removeEventListener('touchmove', this.onTouchMove)
-        this.$el.removeEventListener('touchend', this.onTouchEnd)
-        this.$el.removeEventListener('touchcancel', this.onTouchEnd)
       }
     },
     created () {
       this.vueMoves = true
       this.vueLeave = true
       this.vueTouches = {x: 0, y: 0}
-    },
-    mounted () {
-      this.enableSwipe && this.bindEvent()
-    },
-    beforeDestroy () {
-      this.unbindEvent()
     }
   }
 </script>
