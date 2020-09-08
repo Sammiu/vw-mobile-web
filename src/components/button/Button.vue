@@ -3,32 +3,28 @@
     class="button"
     :class="[active && activeClassName]"
     :style="[active && activeStyle]"
-    :disabled="disabled"
-    @touchstart="onTouchStart"
-    @touchmove="onTouchMove"
-    @touchend="onTouchEnd"
-    @touchcancel="onTouchEnd">
+    :disabled="disabled">
     <slot/>
   </div>
 </template>
 <script>
-  import {isFunction} from '@utils'
-
+  /** IOS webView组件用的是 UIWebView
+   * 还存在 300ms 延迟bug ,针对bug, 采用了touch事件处理模拟点击
+   * 模拟事件对IOS有效,  Android不做任何处理
+   **/
   export default {
     name: 'Button',
     props: {
-      touchstart: {type: Function},
-      touchmove: {type: Function},
-      touchend: {type: Function},
-      enableLongTap: {type: Boolean, default: false},
-      longPressTime: {type: Number, default: 2000},
-      disabled: {type: Boolean, default: false},
-      activeClassName: {type: String, default: ''},
+      activeClassName: {type: String},
       activeStyle: {type: [Object, String, Array]},
+      /** 按钮禁用 */
+      disabled: {type: Boolean, default: false},
       /** 阻止事件冒泡 */
       stop: {type: Boolean, default: false},
       /** 阻止浏览器默认行为 */
-      prevent: {type: Boolean, default: false}
+      prevent: {type: Boolean, default: false},
+      /** 监听touch 事件 默认：false */
+      listenerTouch: {type: Boolean, default: false}
     },
     data () {
       return {
@@ -44,6 +40,7 @@
     },
     created () {
       this.vueTouches = {}
+      this.isAndroid = navigator.userAgent.indexOf('Android') > -1 || navigator.userAgent.indexOf('Adr') > -1
     },
     methods: {
       preventDefault (evt) {
@@ -57,68 +54,79 @@
         }
       },
       triggerEvent (eventType, isActive, evt) {
-        if (eventType === 'onClick') {
+        if (eventType === 'onClick' || this.listenerTouch) {
           this.$emit(eventType, evt)
-        } else if (isFunction(this[eventType])) {
-          this[eventType](evt)
         }
         if (isActive !== this.active && !this.disabled) {
           this.active = isActive
         }
       },
-      onClick (evt) {
-        if (!this.disabled) {
+      onclick (evt) {
+        if (this.disabled === false) {
           this.triggerEvent('onClick', this.active, evt)
         }
       },
-      bindLongTapEvent (evt) {
-        if (this.enableLongTap && !this.disabled) {
-          this.time = setTimeout(() => {
-            if (!this.vueLeave && !this.vueMoves) {
-              this.longTouch = true
-              this.active = false
-              this.time = null
-              this.$emit('onLongPress')
-            }
-          }, this.longPressTime)
-        }
-      },
-      onTouchStart (evt) {
-        this.preventDefault(evt)
+      ontouchstart (evt) {
         this.stopPropagation(evt)
         this.vueMoves = false
-        this.vueLeave = false
-        this.longTouch = false
         this.vueTouches.x = evt.changedTouches[0].pageX
         this.vueTouches.y = evt.changedTouches[0].pageY
-        this.bindLongTapEvent()
         this.triggerEvent('touchstart', true, evt)
       },
-      onTouchMove (evt) {
+      ontouchmove (evt) {
         this.preventDefault(evt)
         this.stopPropagation(evt)
-        if (evt.changedTouches[0].pageX === this.vueTouches.x && evt.changedTouches[0].pageY === this.vueTouches.y) {
+        const disX = Math.abs(evt.changedTouches[0].pageX - this.vueTouches.x)
+        const disY = Math.abs(evt.changedTouches[0].pageY - this.vueTouches.y)
+        if (disX <= 5 && disY <= 5) {
           this.triggerEvent('touchmove', true, evt)
         } else {
           this.vueMoves = true
           this.triggerEvent('touchmove', false, evt)
         }
       },
-      onTouchEnd (evt) {
+      ontouchend (evt) {
         this.preventDefault(evt)
         this.stopPropagation(evt)
-        this.vueLeave = true
-        this.time && clearTimeout(this.time)
         this.triggerEvent('touchend', false, evt)
-        if (!this.vueMoves && !this.longTouch) {
-          this.onClick(evt)
+        if (this.isAndroid === false && this.vueMoves === false) {
+          this.onclick(evt)
+        }
+      },
+      bindEvent () {
+        if (this.isAndroid) {
+          this.$el.addEventListener('click', this.onclick)
+        }
+
+        if (this.isAndroid === false || this.listenerTouch) {
+          this.$el.addEventListener('touchstart', this.ontouchstart)
+          this.$el.addEventListener('touchmove', this.ontouchmove)
+          this.$el.addEventListener('touchend', this.ontouchend)
+          this.$el.addEventListener('touchcancel', this.ontouchend)
+        }
+        this.$once('hook:beforeDestroy', this.unbindEvent)
+      },
+      unbindEvent () {
+        if (this.isAndroid) {
+          this.$el.removeEventListener('click', this.onclick)
+        }
+
+        if (this.isAndroid === false || this.listenerTouch) {
+          this.$el.removeEventListener('touchstart', this.ontouchstart)
+          this.$el.removeEventListener('touchmove', this.ontouchmove)
+          this.$el.removeEventListener('touchend', this.ontouchend)
+          this.$el.removeEventListener('touchcancel', this.ontouchend)
         }
       }
+    },
+    mounted () {
+      this.bindEvent()
     }
   }
 </script>
 <style lang="less">
   .button {
+    cursor: pointer;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 </style>
